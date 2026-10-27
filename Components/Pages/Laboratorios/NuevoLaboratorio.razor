@@ -1,0 +1,83 @@
+﻿@page "/laboratorios/nuevo"
+
+@using BlazorApp1.Components.Models
+
+@inject NavigationManager Navigation
+
+<h1>Nuevo laboratorio</h1>
+
+<div class="ci-card ci-form-grid">
+    <div>
+        <label>Nombre</label>
+        <input class="ci-input"
+               @bind="laboratorio.Nombre" />
+    </div>
+
+    <div>
+        <label>RUC</label>
+        <input class="ci-input"
+               @bind="laboratorio.Ruc" />
+    </div>
+
+    <div>
+        <label>Dirección</label>
+        <input class="ci-input"
+               @bind="laboratorio.Direccion" />
+    </div>
+
+    <div>
+        <label>Teléfono</label>
+        <input class="ci-input"
+               @bind="laboratorio.Telefono" />
+    </div>
+
+    <div>
+        <label>Correo</label>
+        <input class="ci-input"
+               @bind="laboratorio.Correo" />
+    </div>
+
+    <div>
+        <label>Estado</label>
+
+        <select class="ci-input"
+                @bind="laboratorio.Estado">
+            <option value="ACTIVO">
+                ACTIVO
+            </option>
+
+            <option value="INACTIVO">
+                INACTIVO
+            </option>
+        </select>
+    </div>
+</div>
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar
+    </button>
+</div>
+
+@code {
+    private LaboratorioCalibracionUi laboratorio =
+        new()
+        {
+            Estado = "ACTIVO"
+        };
+
+    private void Guardar()
+    {
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/laboratorios");
+    }
+}

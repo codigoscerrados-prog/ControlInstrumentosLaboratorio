@@ -1,0 +1,239 @@
+﻿@page "/instrumentos"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Instrumentos de Laboratorio</h1>
+        <p>Consulta, crea, edita y cambia el estado.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nuevo">
+        + Nuevo instrumento
+    </button>
+</div>
+
+<div class="ci-card ci-filter-card">
+    <input class="ci-input"
+           @bind="busqueda"
+           @bind:event="oninput"
+           placeholder="Buscar..." />
+
+    <select class="ci-input"
+            @bind="estadoFiltro">
+        <option value="">Todos los estados</option>
+        <option value="OPERATIVO">OPERATIVO</option>
+        <option value="EN_CALIBRACION">EN CALIBRACIÓN</option>
+        <option value="EN_MANTENIMIENTO">EN MANTENIMIENTO</option>
+        <option value="FUERA_SERVICIO">FUERA DE SERVICIO</option>
+        <option value="BAJA">BAJA</option>
+    </select>
+</div>
+
+<div class="ci-card">
+    <div class="ci-table-wrap">
+        <table class="ci-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Instrumento</th>
+                    <th>Tipo</th>
+                    <th>Grupo</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var instrumento in Filtrados)
+                {
+                    <tr>
+                        <td>
+                            <strong>@instrumento.Codigo</strong>
+                        </td>
+
+                        <td>@instrumento.Nombre</td>
+
+                        <td>
+                            @instrumento.TipoInstrumentoNombre
+                        </td>
+
+                        <td>
+                            @instrumento.GrupoNombre
+                        </td>
+
+                        <td>@instrumento.Marca</td>
+                        <td>@instrumento.Modelo</td>
+
+                        <td>
+                            <EstadoBadge Estado="@instrumento.Estado" />
+                        </td>
+
+                        <td class="ci-actions">
+                            <button class="ci-btn ci-btn-light"
+                                    @onclick="() => Ver(instrumento.Id)">
+                                Ver
+                            </button>
+
+                            <button class="ci-btn ci-btn-light"
+                                    @onclick="() => Editar(instrumento.Id)">
+                                Editar
+                            </button>
+
+                            @if (instrumento.Estado != "BAJA")
+                            {
+                                <button class="ci-btn ci-btn-danger-soft"
+                                        @onclick="() => DarDeBaja(instrumento)">
+                                    Dar de baja
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="ci-btn ci-btn-success-soft"
+                                        @onclick="() => Reactivar(instrumento)">
+                                    Reactivar
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    private string busqueda = "";
+    private string estadoFiltro = "";
+
+    private readonly List<ActivoUi> instrumentos =
+    [
+        new()
+        {
+            Id = 1,
+            Codigo = "MED-M-26",
+            Nombre = "Manómetro digital",
+
+            TipoInstrumentoId = 1,
+            TipoInstrumentoNombre = "Manómetro",
+
+            GrupoId = 1,
+            GrupoNombre = "Banco 3",
+
+            Marca = "UTOP",
+            Modelo = "UIB6",
+            NumeroSerie = "190410011",
+
+            Rango = "0 - 20 bar",
+            Resolucion = "0.001 bar",
+
+            Ubicacion = "Entrada Banco 3",
+
+            Estado = "OPERATIVO",
+
+            Observaciones = "Instrumento de entrada."
+        },
+
+        new()
+        {
+            Id = 2,
+            Codigo = "MED-Q-01",
+            Nombre = "Medidor de caudal",
+
+            TipoInstrumentoId = 2,
+            TipoInstrumentoNombre = "Caudalímetro",
+
+            GrupoId = 1,
+            GrupoNombre = "Banco 3",
+
+            Marca = "Endress+Hauser",
+            Modelo = "Promag 53",
+            NumeroSerie = "JB24F319000",
+
+            Rango = "0 - 10 L/h",
+            Resolucion = "0.001 L/h",
+
+            Ubicacion = "Línea Q1",
+
+            Estado = "OPERATIVO"
+        },
+
+        new()
+        {
+            Id = 3,
+            Codigo = "MED-T-11",
+            Nombre = "Termómetro digital",
+
+            TipoInstrumentoId = 3,
+            TipoInstrumentoNombre = "Termómetro",
+
+            GrupoId = 1,
+            GrupoNombre = "Banco 3",
+
+            Marca = "UTOP",
+            Modelo = "UTI6",
+
+            Rango = "0 - 100 °C",
+            Resolucion = "0.01 °C",
+
+            Ubicacion = "Banco 3",
+
+            Estado = "EN_CALIBRACION"
+        }
+    ];
+
+    private IEnumerable<ActivoUi> Filtrados =>
+        instrumentos.Where(x =>
+            (
+                string.IsNullOrWhiteSpace(busqueda) ||
+                x.Codigo.Contains(
+                    busqueda,
+                    StringComparison.OrdinalIgnoreCase
+                ) ||
+                x.Nombre.Contains(
+                    busqueda,
+                    StringComparison.OrdinalIgnoreCase
+                ) ||
+                x.Marca.Contains(
+                    busqueda,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            &&
+            (
+                string.IsNullOrWhiteSpace(estadoFiltro) ||
+                x.Estado == estadoFiltro
+            )
+        );
+
+    private void Nuevo()
+    {
+        Navigation.NavigateTo("/instrumentos/nuevo");
+    }
+
+    private void Ver(long id)
+    {
+        Navigation.NavigateTo($"/instrumentos/ver/{id}");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo($"/instrumentos/editar/{id}");
+    }
+
+    private void DarDeBaja(ActivoUi instrumento)
+    {
+        instrumento.Estado = "BAJA";
+    }
+
+    private void Reactivar(ActivoUi instrumento)
+    {
+        instrumento.Estado = "OPERATIVO";
+    }
+}

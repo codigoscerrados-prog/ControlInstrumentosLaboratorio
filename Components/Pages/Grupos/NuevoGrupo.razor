@@ -1,0 +1,50 @@
+﻿@page "/grupos/nuevo"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<h1>Nuevo grupo instrumental</h1>
+
+<div class="ci-card ci-form-grid">
+    <div>
+        <label>Código</label>
+        <input class="ci-input" @bind="grupo.Codigo" />
+    </div>
+
+    <div>
+        <label>Nombre</label>
+        <input class="ci-input" @bind="grupo.Nombre" />
+    </div>
+
+    <div class="ci-form-full">
+        <label>Descripción</label>
+        <textarea class="ci-input ci-textarea"
+                  @bind="grupo.Descripcion">
+        </textarea>
+    </div>
+</div>
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar
+    </button>
+</div>
+
+@code {
+    private GrupoInstrumentalUi grupo = new();
+
+    private void Guardar()
+    {
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/grupos");
+    }
+}

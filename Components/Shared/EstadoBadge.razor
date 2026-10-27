@@ -1,0 +1,11 @@
+<span class="ci-badge @CssClass">@Estado.Replace("_", " ")</span>
+@code {
+    [Parameter] public string Estado { get; set; } = "";
+    private string CssClass => Estado switch {
+        "OPERATIVO" or "ACTIVO" => "ci-badge-ok",
+        "EN_CALIBRACION" => "ci-badge-info",
+        "EN_MANTENIMIENTO" => "ci-badge-warn",
+        "FUERA_SERVICIO" => "ci-badge-danger",
+        _ => "ci-badge-muted"
+    };
+}

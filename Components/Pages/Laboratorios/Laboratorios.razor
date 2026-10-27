@@ -1,0 +1,95 @@
+﻿@page "/laboratorios"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Laboratorios de Calibración</h1>
+        <p>Administra los laboratorios externos.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nuevo">
+        + Nuevo laboratorio
+    </button>
+</div>
+
+<div class="ci-card">
+    <table class="ci-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>RUC</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var laboratorio in laboratorios)
+            {
+                <tr>
+                    <td>@laboratorio.Nombre</td>
+                    <td>@laboratorio.Ruc</td>
+                    <td>@laboratorio.Telefono</td>
+                    <td>@laboratorio.Correo</td>
+
+                    <td>
+                        <EstadoBadge Estado="@laboratorio.Estado" />
+                    </td>
+
+                    <td>
+                        <button class="ci-btn ci-btn-light"
+                                @onclick="() => Editar(laboratorio.Id)">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private readonly List<LaboratorioCalibracionUi> laboratorios =
+    [
+        new()
+        {
+            Id = 1,
+            Nombre = "METROIL",
+            Ruc = "20123456789",
+            Direccion = "Lima",
+            Telefono = "01-5555555",
+            Correo = "calibracion@metroil.test",
+            Estado = "ACTIVO"
+        },
+
+        new()
+        {
+            Id = 2,
+            Nombre = "INACAL",
+            Ruc = "20500000001",
+            Direccion = "Lima",
+            Telefono = "01-4444444",
+            Correo = "contacto@inacal.test",
+            Estado = "ACTIVO"
+        }
+    ];
+
+    private void Nuevo()
+    {
+        Navigation.NavigateTo("/laboratorios/nuevo");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo(
+            $"/laboratorios/editar/{id}"
+        );
+    }
+}

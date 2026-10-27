@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+<div class="ci-shell">
+    <aside class="ci-sidebar">
+        <div class="ci-brand"><div class="ci-brand-icon">⚗</div><div><strong>Control de Instrumentos</strong><small>Laboratorio</small></div></div>
+        <nav class="ci-nav">
+            <NavLink href="/dashboard">Dashboard</NavLink>
+            <NavLink href="/instrumentos" Match="NavLinkMatch.Prefix">Instrumentos</NavLink>
+            <NavLink href="/calibraciones" Match="NavLinkMatch.Prefix">Calibraciones</NavLink>
+            <NavLink href="/laboratorios" Match="NavLinkMatch.Prefix">Laboratorios</NavLink>
+            <NavLink href="/grupos" Match="NavLinkMatch.Prefix">Grupos</NavLink>
+            <NavLink href="/tipos-instrumento" Match="NavLinkMatch.Prefix">Tipos de instrumento</NavLink>
+            <NavLink href="/usuarios" Match="NavLinkMatch.Prefix">Usuarios</NavLink>
+            <NavLink href="/roles" Match="NavLinkMatch.Prefix">Roles</NavLink>
+            <div class="ci-nav-separator"></div>
+            <NavLink href="/login">Cerrar sesión</NavLink>
+        </nav>
+    </aside>
+    <main class="ci-main">@Body</main>
+</div>

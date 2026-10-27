@@ -1,0 +1,86 @@
+﻿@page "/grupos"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Grupos instrumentales</h1>
+        <p>Bancos, patrones y respaldo.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nuevo">
+        + Nuevo grupo
+    </button>
+</div>
+
+<div class="ci-card">
+    <table class="ci-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var grupo in grupos)
+            {
+                <tr>
+                    <td>@grupo.Codigo</td>
+                    <td>@grupo.Nombre</td>
+                    <td>@grupo.Descripcion</td>
+
+                    <td>
+                        <button class="ci-btn ci-btn-light"
+                                @onclick="() => Editar(grupo.Id)">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private readonly List<GrupoInstrumentalUi> grupos =
+    [
+        new()
+        {
+            Id = 1,
+            Codigo = "B03",
+            Nombre = "Banco 3",
+            Descripcion = "Banco de verificación"
+        },
+
+        new()
+        {
+            Id = 2,
+            Codigo = "PAT",
+            Nombre = "Patrones",
+            Descripcion = "Instrumentos patrón"
+        },
+
+        new()
+        {
+            Id = 3,
+            Codigo = "RESP",
+            Nombre = "Respaldo",
+            Descripcion = "Instrumentos de respaldo"
+        }
+    ];
+
+    private void Nuevo()
+    {
+        Navigation.NavigateTo("/grupos/nuevo");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo($"/grupos/editar/{id}");
+    }
+}

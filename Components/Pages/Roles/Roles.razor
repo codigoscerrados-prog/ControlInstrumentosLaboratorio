@@ -1,0 +1,81 @@
+﻿@page "/roles"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Roles</h1>
+        <p>Administra los roles de usuarios.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nuevo">
+        + Nuevo rol
+    </button>
+</div>
+
+<div class="ci-card">
+    <table class="ci-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var rol in roles)
+            {
+                <tr>
+                    <td>@rol.Nombre</td>
+                    <td>@rol.Descripcion</td>
+
+                    <td>
+                        <button class="ci-btn ci-btn-light"
+                                @onclick="() => Editar(rol.Id)">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private readonly List<RolUi> roles =
+    [
+        new()
+        {
+            Id = 1,
+            Nombre = "ADMIN",
+            Descripcion = "Administrador"
+        },
+
+        new()
+        {
+            Id = 2,
+            Nombre = "TECNICO",
+            Descripcion = "Personal técnico"
+        },
+
+        new()
+        {
+            Id = 3,
+            Nombre = "CONSULTA",
+            Descripcion = "Solo consulta"
+        }
+    ];
+
+    private void Nuevo()
+    {
+        Navigation.NavigateTo("/roles/nuevo");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo($"/roles/editar/{id}");
+    }
+}

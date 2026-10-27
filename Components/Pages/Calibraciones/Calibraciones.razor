@@ -1,0 +1,91 @@
+﻿@page "/calibraciones"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Calibraciones</h1>
+        <p>Historial de calibración de los instrumentos.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nueva">
+        + Nueva calibración
+    </button>
+</div>
+
+<div class="ci-card">
+    <table class="ci-table">
+        <thead>
+            <tr>
+                <th>Instrumento</th>
+                <th>Laboratorio</th>
+                <th>Fecha envío</th>
+                <th>Fecha calibración</th>
+                <th>Vencimiento</th>
+                <th>Certificado</th>
+                <th>Resultado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var c in calibraciones)
+            {
+                <tr>
+                    <td>@c.ActivoCodigo</td>
+                    <td>@c.LaboratorioNombre</td>
+                    <td>@Fecha(c.FechaEnvio)</td>
+                    <td>@Fecha(c.FechaCalibracion)</td>
+                    <td>@Fecha(c.FechaVencimiento)</td>
+                    <td>@c.NumeroCertificado</td>
+                    <td>@c.Resultado</td>
+
+                    <td>
+                        <button class="ci-btn ci-btn-light"
+                                @onclick="() => Editar(c.Id)">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private readonly List<CalibracionUi> calibraciones =
+    [
+        new()
+        {
+            Id = 1,
+            ActivoId = 1,
+            ActivoCodigo = "MED-M-26",
+            ActivoNombre = "Manómetro digital",
+            LaboratorioId = 1,
+            LaboratorioNombre = "METROIL",
+            FechaEnvio = new DateTime(2026, 5, 10),
+            FechaCalibracion = new DateTime(2026, 5, 15),
+            FechaRetorno = new DateTime(2026, 5, 19),
+            FechaVencimiento = new DateTime(2027, 5, 15),
+            NumeroCertificado = "CAL-026-2026",
+            Resultado = "CONFORME"
+        }
+    ];
+
+    private void Nueva()
+    {
+        Navigation.NavigateTo("/calibraciones/nueva");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo($"/calibraciones/editar/{id}");
+    }
+
+    private static string Fecha(DateTime? fecha)
+    {
+        return fecha?.ToString("dd/MM/yyyy") ?? "-";
+    }
+}

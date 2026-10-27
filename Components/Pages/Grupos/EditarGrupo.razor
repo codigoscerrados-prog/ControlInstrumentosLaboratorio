@@ -1,0 +1,59 @@
+﻿@page "/grupos/editar/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<h1>Editar grupo instrumental</h1>
+
+<div class="ci-card ci-form-grid">
+    <div>
+        <label>Código</label>
+        <input class="ci-input" @bind="grupo.Codigo" />
+    </div>
+
+    <div>
+        <label>Nombre</label>
+        <input class="ci-input" @bind="grupo.Nombre" />
+    </div>
+
+    <div class="ci-form-full">
+        <label>Descripción</label>
+        <textarea class="ci-input ci-textarea"
+                  @bind="grupo.Descripcion">
+        </textarea>
+    </div>
+</div>
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar cambios
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private GrupoInstrumentalUi grupo = new()
+    {
+        Id = 1,
+        Codigo = "B03",
+        Nombre = "Banco 3",
+        Descripcion = "Banco de verificación"
+    };
+
+    private void Guardar()
+    {
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/grupos");
+    }
+}

@@ -1,0 +1,50 @@
+﻿@page "/calibraciones/editar/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+@inject NavigationManager Navigation
+
+<h1>Editar calibración</h1>
+
+<CalibracionForm Model="calibracion" />
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar cambios
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private CalibracionUi calibracion = new()
+    {
+        Id = 1,
+        ActivoCodigo = "MED-M-26",
+        LaboratorioNombre = "METROIL",
+
+        FechaEnvio = new DateTime(2026, 5, 10),
+        FechaCalibracion = new DateTime(2026, 5, 15),
+        FechaRetorno = new DateTime(2026, 5, 19),
+        FechaVencimiento = new DateTime(2027, 5, 15),
+
+        NumeroCertificado = "CAL-026-2026",
+        Resultado = "CONFORME"
+    };
+
+    private void Guardar()
+    {
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/calibraciones");
+    }
+}

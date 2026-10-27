@@ -1,0 +1,100 @@
+﻿@page "/"
+@page "/login"
+
+@layout BlazorApp1.Components.Layout.EmptyLayout
+
+@inject NavigationManager Navigation
+
+<div class="ci-login-page">
+
+    <div class="ci-login-card">
+
+        <div class="ci-login-icon">⚗</div>
+
+        <h1>Control de Instrumentos</h1>
+
+        <p>Gestión de instrumentos de laboratorio</p>
+
+
+        <label>Usuario</label>
+
+        <input class="ci-input"
+               @bind="usuario"
+               placeholder="Ingrese su usuario" />
+
+
+        <label>Contraseña</label>
+
+        <input class="ci-input"
+               type="password"
+               @bind="password"
+               placeholder="Ingrese su contraseña" />
+
+
+        <label class="ci-check">
+
+            <input type="checkbox"
+                   @bind="recordarme" />
+
+            Recordarme
+
+        </label>
+
+
+        <button class="ci-btn ci-btn-primary ci-btn-full"
+                @onclick="Ingresar">
+
+            Iniciar sesión
+
+        </button>
+
+
+        @if (!string.IsNullOrWhiteSpace(mensaje))
+        {
+            <div class="ci-message-error">
+
+                @mensaje
+
+            </div>
+        }
+
+
+        <small class="ci-demo-note">
+
+            Usuario: admin / Contraseña: admin
+
+        </small>
+
+    </div>
+
+</div>
+
+
+@code {
+
+    private string usuario = "";
+
+    private string password = "";
+
+    private bool recordarme;
+
+    private string mensaje = "";
+
+
+    private void Ingresar()
+    {
+        if (usuario == "admin" &&
+            password == "admin")
+        {
+            mensaje = "";
+
+            Navigation.NavigateTo("/dashboard");
+        }
+        else
+        {
+            mensaje =
+                "Usuario o contraseña incorrectos.";
+        }
+    }
+
+}

@@ -1,0 +1,85 @@
+﻿@page "/usuarios"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Usuarios</h1>
+        <p>Administra usuarios del sistema.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nuevo">
+        + Nuevo usuario
+    </button>
+</div>
+
+<div class="ci-card">
+    <table class="ci-table">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var usuario in usuarios)
+            {
+                <tr>
+                    <td>@usuario.Username</td>
+                    <td>@usuario.RolNombre</td>
+
+                    <td>
+                        <EstadoBadge Estado="@usuario.Estado" />
+                    </td>
+
+                    <td>
+                        <button class="ci-btn ci-btn-light"
+                                @onclick="() => Editar(usuario.Id)">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private readonly List<UsuarioUi> usuarios =
+    [
+        new()
+        {
+            Id = 1,
+            Username = "admin",
+            Estado = "ACTIVO",
+            RolId = 1,
+            RolNombre = "ADMIN"
+        },
+
+        new()
+        {
+            Id = 2,
+            Username = "john",
+            Estado = "ACTIVO",
+            RolId = 2,
+            RolNombre = "TECNICO"
+        }
+    ];
+
+    private void Nuevo()
+    {
+        Navigation.NavigateTo("/usuarios/nuevo");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo($"/usuarios/editar/{id}");
+    }
+}

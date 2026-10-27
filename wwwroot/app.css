@@ -1,0 +1,325 @@
+html,
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+/* LAYOUT */
+
+.ci-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+}
+
+.ci-sidebar {
+    background: #101828;
+    color: white;
+    padding: 24px 18px;
+}
+
+.ci-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.ci-brand-icon {
+    font-size: 28px;
+}
+
+.ci-brand strong {
+    display: block;
+}
+
+.ci-brand small {
+    display: block;
+    color: #98a2b3;
+}
+
+.ci-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .ci-nav a {
+        color: #d0d5dd;
+        text-decoration: none;
+        padding: 11px 12px;
+        border-radius: 8px;
+    }
+
+        .ci-nav a:hover,
+        .ci-nav a.active {
+            background: #1d2939;
+            color: white;
+        }
+
+.ci-main {
+    padding: 32px;
+}
+
+/* LOGIN */
+
+.ci-login-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eef4ff;
+    padding: 20px;
+}
+
+.ci-login-card {
+    width: 400px;
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid #e4e7ec;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.ci-login-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.ci-login-card h1 {
+    margin: 0 0 8px;
+}
+
+.ci-login-card p {
+    color: #667085;
+    margin-bottom: 25px;
+}
+
+/* INPUT */
+
+.ci-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 15px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+/* BUTTON */
+
+.ci-btn {
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.ci-btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+    .ci-btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+.ci-btn-full {
+    width: 100%;
+}
+
+.ci-btn-light {
+    background: #f2f4f7;
+    color: #344054;
+}
+
+.ci-btn-danger-soft {
+    background: #fef3f2;
+    color: #b42318;
+}
+
+.ci-btn-success-soft {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+/* CHECKBOX */
+
+.ci-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+    .ci-check input {
+        width: auto;
+    }
+
+/* PÁGINAS */
+
+.ci-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+    .ci-page-header h1 {
+        margin: 0;
+    }
+
+    .ci-page-header p {
+        margin: 5px 0 0;
+        color: #667085;
+    }
+
+.ci-card {
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+/* TABLE */
+
+.ci-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .ci-table th,
+    .ci-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eaecf0;
+        text-align: left;
+    }
+
+    .ci-table th {
+        color: #667085;
+        font-size: 13px;
+    }
+
+.ci-actions {
+    display: flex;
+    gap: 7px;
+}
+
+/* ESTADOS */
+
+.ci-badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ci-badge-ok {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.ci-badge-info {
+    background: #eff8ff;
+    color: #175cd3;
+}
+
+.ci-badge-warn {
+    background: #fffaeb;
+    color: #b54708;
+}
+
+.ci-badge-danger {
+    background: #fef3f2;
+    color: #b42318;
+}
+
+.ci-badge-muted {
+    background: #f2f4f7;
+    color: #475467;
+}
+
+/* FORM */
+
+.ci-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.ci-form-full {
+    grid-column: 1 / -1;
+}
+
+.ci-textarea {
+    min-height: 100px;
+}
+
+.ci-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* DETALLE */
+
+.ci-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ci-dl {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 10px;
+}
+
+    .ci-dl dt {
+        color: #667085;
+    }
+
+    .ci-dl dd {
+        margin: 0;
+        font-weight: 600;
+    }
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+    .ci-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .ci-sidebar {
+        display: none;
+    }
+
+    .ci-form-grid,
+    .ci-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ci-message-error {
+    margin-top: 15px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fef3f2;
+    color: #b42318;
+    font-size: 14px;
+    font-weight: 500;
+}

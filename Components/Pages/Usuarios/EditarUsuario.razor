@@ -1,0 +1,77 @@
+﻿@page "/usuarios/editar/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<h1>Editar usuario</h1>
+
+<div class="ci-card ci-form-grid">
+    <div>
+        <label>Usuario</label>
+        <input class="ci-input"
+               @bind="usuario.Username" />
+    </div>
+
+    <div>
+        <label>Nueva contraseña</label>
+        <input class="ci-input"
+               type="password"
+               @bind="usuario.Password" />
+    </div>
+
+    <div>
+        <label>Rol</label>
+
+        <select class="ci-input"
+                @bind="usuario.RolNombre">
+            <option value="ADMIN">ADMIN</option>
+            <option value="TECNICO">TECNICO</option>
+            <option value="CONSULTA">CONSULTA</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Estado</label>
+
+        <select class="ci-input"
+                @bind="usuario.Estado">
+            <option value="ACTIVO">ACTIVO</option>
+            <option value="INACTIVO">INACTIVO</option>
+        </select>
+    </div>
+</div>
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar cambios
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private UsuarioUi usuario = new()
+    {
+        Id = 1,
+        Username = "admin",
+        Estado = "ACTIVO",
+        RolId = 1,
+        RolNombre = "ADMIN"
+    };
+
+    private void Guardar()
+    {
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/usuarios");
+    }
+}

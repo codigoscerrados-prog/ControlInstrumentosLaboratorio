@@ -1,0 +1,67 @@
+﻿@page "/calibraciones/nueva"
+@page "/calibraciones/nueva/{ActivoId:long}"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Nueva calibración</h1>
+        <p>Registra el envío y resultado de calibración.</p>
+    </div>
+</div>
+
+<CalibracionForm Model="calibracion" />
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar calibración
+    </button>
+</div>
+
+@if (guardado)
+{
+    <div class="ci-success-box">
+        Calibración guardada en el prototipo.
+    </div>
+}
+
+@code {
+    [Parameter]
+    public long? ActivoId { get; set; }
+
+    private bool guardado;
+
+    private CalibracionUi calibracion = new()
+    {
+        ActivoCodigo = "MED-M-26",
+        LaboratorioNombre = "METROIL",
+        Resultado = "CONFORME"
+    };
+
+    protected override void OnParametersSet()
+    {
+        if (ActivoId.HasValue)
+        {
+            calibracion.ActivoId = ActivoId.Value;
+        }
+    }
+
+    private void Guardar()
+    {
+        guardado = true;
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/calibraciones");
+    }
+}

@@ -1,0 +1,54 @@
+﻿@page "/roles/editar/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<h1>Editar rol</h1>
+
+<div class="ci-card ci-form-grid">
+    <div>
+        <label>Nombre</label>
+        <input class="ci-input"
+               @bind="rol.Nombre" />
+    </div>
+
+    <div class="ci-form-full">
+        <label>Descripción</label>
+        <textarea class="ci-input ci-textarea"
+                  @bind="rol.Descripcion">
+        </textarea>
+    </div>
+</div>
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar cambios
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private RolUi rol = new()
+    {
+        Id = 1,
+        Nombre = "ADMIN",
+        Descripcion = "Administrador"
+    };
+
+    private void Guardar()
+    {
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/roles");
+    }
+}

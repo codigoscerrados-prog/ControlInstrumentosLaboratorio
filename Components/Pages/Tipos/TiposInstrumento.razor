@@ -1,0 +1,83 @@
+﻿@page "/tipos-instrumento"
+
+@using BlazorApp1.Components.Models
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Tipos de instrumento</h1>
+        <p>Catálogo de tipos.</p>
+    </div>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Nuevo">
+        + Nuevo tipo
+    </button>
+</div>
+
+<div class="ci-card">
+    <table class="ci-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var tipo in tipos)
+            {
+                <tr>
+                    <td>@tipo.Nombre</td>
+                    <td>@tipo.Descripcion</td>
+
+                    <td>
+                        <button class="ci-btn ci-btn-light"
+                                @onclick="() => Editar(tipo.Id)">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private readonly List<TipoInstrumentoUi> tipos =
+    [
+        new()
+        {
+            Id = 1,
+            Nombre = "Manómetro",
+            Descripcion = "Medición de presión"
+        },
+
+        new()
+        {
+            Id = 2,
+            Nombre = "Termómetro",
+            Descripcion = "Medición de temperatura"
+        },
+
+        new()
+        {
+            Id = 3,
+            Nombre = "Caudalímetro",
+            Descripcion = "Medición de caudal"
+        }
+    ];
+
+    private void Nuevo()
+    {
+        Navigation.NavigateTo("/tipos-instrumento/nuevo");
+    }
+
+    private void Editar(long id)
+    {
+        Navigation.NavigateTo(
+            $"/tipos-instrumento/editar/{id}"
+        );
+    }
+}

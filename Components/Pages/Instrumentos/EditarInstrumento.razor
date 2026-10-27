@@ -1,0 +1,77 @@
+﻿@page "/instrumentos/editar/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Editar instrumento</h1>
+        <p>Modifica los datos del instrumento.</p>
+    </div>
+</div>
+
+<InstrumentoForm Model="instrumento" />
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar cambios
+    </button>
+</div>
+
+@if (guardado)
+{
+    <div class="ci-success-box">
+        Cambios guardados en el prototipo.
+    </div>
+}
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private bool guardado;
+
+    private ActivoUi instrumento = new()
+    {
+        Id = 1,
+        Codigo = "MED-M-26",
+        Nombre = "Manómetro digital",
+
+        TipoInstrumentoId = 1,
+        TipoInstrumentoNombre = "Manómetro",
+
+        GrupoId = 1,
+        GrupoNombre = "Banco 3",
+
+        Marca = "UTOP",
+        Modelo = "UIB6",
+        NumeroSerie = "190410011",
+
+        Rango = "0 - 20 bar",
+        Resolucion = "0.001 bar",
+
+        Ubicacion = "Entrada Banco 3",
+
+        Estado = "OPERATIVO",
+
+        Observaciones = "Instrumento de entrada."
+    };
+
+    private void Guardar()
+    {
+        guardado = true;
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/instrumentos");
+    }
+}

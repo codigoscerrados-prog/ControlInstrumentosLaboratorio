@@ -1,0 +1,118 @@
+@using BlazorApp1.Components.Models
+
+<div class="ci-card">
+    <div class="ci-form-grid">
+
+        <div>
+            <label>Instrumento</label>
+
+            <select class="ci-input"
+                    @bind="Model.ActivoCodigo">
+
+                <option value="MED-M-26">
+                    MED-M-26
+                </option>
+
+                <option value="MED-Q-01">
+                    MED-Q-01
+                </option>
+
+                <option value="MED-T-11">
+                    MED-T-11
+                </option>
+
+            </select>
+        </div>
+
+        <div>
+            <label>Laboratorio</label>
+
+            <select class="ci-input"
+                    @bind="Model.LaboratorioNombre">
+
+                <option value="METROIL">
+                    METROIL
+                </option>
+
+                <option value="INACAL">
+                    INACAL
+                </option>
+
+                <option value="Laboratorio Externo 01">
+                    Laboratorio Externo 01
+                </option>
+
+            </select>
+        </div>
+
+        <div>
+            <label>Fecha de envío</label>
+
+            <InputDate class="ci-input"
+                       @bind-Value="Model.FechaEnvio" />
+        </div>
+
+        <div>
+            <label>Fecha de calibración</label>
+
+            <InputDate class="ci-input"
+                       @bind-Value="Model.FechaCalibracion" />
+        </div>
+
+        <div>
+            <label>Fecha de retorno</label>
+
+            <InputDate class="ci-input"
+                       @bind-Value="Model.FechaRetorno" />
+        </div>
+
+        <div>
+            <label>Fecha de vencimiento</label>
+
+            <InputDate class="ci-input"
+                       @bind-Value="Model.FechaVencimiento" />
+        </div>
+
+        <div>
+            <label>Número de certificado</label>
+
+            <input class="ci-input"
+                   @bind="Model.NumeroCertificado" />
+        </div>
+
+        <div>
+            <label>Resultado</label>
+
+            <select class="ci-input"
+                    @bind="Model.Resultado">
+
+                <option value="CONFORME">
+                    Conforme
+                </option>
+
+                <option value="NO_CONFORME">
+                    No conforme
+                </option>
+
+                <option value="PENDIENTE">
+                    Pendiente
+                </option>
+
+            </select>
+        </div>
+
+        <div class="ci-form-full">
+            <label>Observaciones</label>
+
+            <textarea class="ci-input ci-textarea"
+                      @bind="Model.Observaciones">
+            </textarea>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public CalibracionUi Model { get; set; } = new();
+}

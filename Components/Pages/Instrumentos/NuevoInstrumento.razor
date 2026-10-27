@@ -1,0 +1,59 @@
+﻿@page "/instrumentos/nuevo"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+
+@inject NavigationManager Navigation
+
+<div class="ci-page-header">
+    <div>
+        <h1>Nuevo instrumento</h1>
+        <p>Registra los datos principales.</p>
+    </div>
+</div>
+
+<InstrumentoForm Model="instrumento" />
+
+<div class="ci-footer-actions">
+    <button class="ci-btn ci-btn-light"
+            @onclick="Cancelar">
+        Cancelar
+    </button>
+
+    <button class="ci-btn ci-btn-primary"
+            @onclick="Guardar">
+        Guardar instrumento
+    </button>
+</div>
+
+@if (guardado)
+{
+    <div class="ci-success-box">
+        Instrumento guardado en el prototipo.
+    </div>
+}
+
+@code {
+    private ActivoUi instrumento = new()
+    {
+        Estado = "OPERATIVO",
+
+        GrupoId = 1,
+        GrupoNombre = "Banco 3",
+
+        TipoInstrumentoId = 1,
+        TipoInstrumentoNombre = "Manómetro"
+    };
+
+    private bool guardado;
+
+    private void Guardar()
+    {
+        guardado = true;
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/instrumentos");
+    }
+}
