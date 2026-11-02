@@ -13,4 +13,6 @@ public class UsuarioUi
     public long RolId { get; set; }
 
     public string RolNombre { get; set; } = "";
+
+    public string Correo { get; set; } = "";
 }
