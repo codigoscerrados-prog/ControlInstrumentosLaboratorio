@@ -1,59 +1,247 @@
 ﻿@page "/grupos/editar/{Id:long}"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject GrupoInstrumentalService GrupoService
+@inject SessionService Session
 
-<h1>Editar grupo instrumental</h1>
 
-<div class="ci-card ci-form-grid">
+<div class="ci-page-header">
     <div>
-        <label>Código</label>
-        <input class="ci-input" @bind="grupo.Codigo" />
-    </div>
-
-    <div>
-        <label>Nombre</label>
-        <input class="ci-input" @bind="grupo.Nombre" />
-    </div>
-
-    <div class="ci-form-full">
-        <label>Descripción</label>
-        <textarea class="ci-input ci-textarea"
-                  @bind="grupo.Descripcion">
-        </textarea>
+        <h1>Editar grupo instrumental</h1>
+        <p>Modifica los datos del grupo.</p>
     </div>
 </div>
 
-<div class="ci-footer-actions">
-    <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
-        Cancelar
-    </button>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar cambios
-    </button>
-</div>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando grupo...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card ci-form-grid">
+
+        <div>
+            <label>Código</label>
+
+            <input class="ci-input"
+                   @bind="grupo.Codigo" />
+        </div>
+
+        <div>
+            <label>Nombre</label>
+
+            <input class="ci-input"
+                   @bind="grupo.Nombre" />
+        </div>
+
+        <div class="ci-form-full">
+
+            <label>Descripción</label>
+
+            <textarea class="ci-input ci-textarea"
+                      @bind="grupo.Descripcion">
+            </textarea>
+
+        </div>
+
+    </div>
+
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Cancelar"
+                disabled="@guardando">
+
+            Cancelar
+
+        </button>
+
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Guardar"
+                disabled="@guardando">
+
+            @if (guardando)
+            {
+                <span>Guardando...</span>
+            }
+            else
+            {
+                <span>Guardar cambios</span>
+            }
+
+        </button>
+
+    </div>
+}
+
 
 @code {
+
     [Parameter]
     public long Id { get; set; }
 
-    private GrupoInstrumentalUi grupo = new()
-    {
-        Id = 1,
-        Codigo = "B03",
-        Nombre = "Banco 3",
-        Descripcion = "Banco de verificación"
-    };
 
-    private void Guardar()
+    private GrupoInstrumentalUi grupo =
+        new();
+
+    private bool cargando = true;
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
     {
+        await CargarGrupo();
     }
+
+
+    private async Task CargarGrupo()
+    {
+        try
+        {
+            cargando = true;
+
+
+            var encontrado =
+                await GrupoService
+                    .ObtenerAsync(Id);
+
+
+            if (encontrado is null)
+            {
+                error =
+                    "No se encontró el grupo.";
+
+                return;
+            }
+
+
+            grupo = encontrado;
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al cargar el grupo. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private async Task Guardar()
+    {
+        error = "";
+
+
+        if (string.IsNullOrWhiteSpace(
+                grupo.Codigo))
+        {
+            error =
+                "Debe ingresar el código.";
+
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(
+                grupo.Nombre))
+        {
+            error =
+                "Debe ingresar el nombre.";
+
+            return;
+        }
+
+
+        try
+        {
+            guardando = true;
+
+
+            var request =
+                new GrupoInstrumentalRequest
+                {
+                    Id = Id,
+
+                    Codigo =
+                        grupo.Codigo,
+
+                    Nombre =
+                        grupo.Nombre,
+
+                    Descripcion =
+                        grupo.Descripcion,
+
+                    FechaCreacion =
+                        grupo.FechaCreacion,
+
+                    UsuarioCreacion =
+                        grupo.UsuarioCreacion,
+
+                    FechaModificacion =
+                        DateTimeOffset.UtcNow,
+
+                    UsuarioModificacion =
+                        Session.Username
+                };
+
+
+            var actualizado =
+                await GrupoService
+                    .ActualizarAsync(
+                        Id,
+                        request
+                    );
+
+
+            if (actualizado is null)
+            {
+                error =
+                    "No se pudieron guardar los cambios.";
+
+                return;
+            }
+
+
+            Navigation.NavigateTo(
+                "/grupos"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar los cambios. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/grupos");
+        Navigation.NavigateTo(
+            "/grupos"
+        );
     }
 }

@@ -27,9 +27,14 @@ builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<BackendClient>();
 
+
 builder.Services.AddScoped<ActivoService>();
 builder.Services.AddScoped<GrupoInstrumentalService>();
 builder.Services.AddScoped<TipoInstrumentoService>();
+builder.Services.AddScoped<CalibracionService>();
+builder.Services.AddScoped<LaboratorioCalibracionService>();
+
+
 
 var app = builder.Build();
 

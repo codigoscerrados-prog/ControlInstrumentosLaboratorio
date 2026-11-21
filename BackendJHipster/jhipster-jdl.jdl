@@ -1,0 +1,128 @@
+entity Rol {
+    nombre String required maxlength(50)
+    descripcion String maxlength(150)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+entity Usuario {
+    username String required maxlength(50)
+    password String required maxlength(100)
+    correo String required maxlength(100)
+    estado String required maxlength(20)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+entity RecuperacionPassword {
+    token String required maxlength(200)
+
+    fechaSolicitud Instant required
+
+    fechaExpiracion Instant required
+
+    usado Boolean required
+}
+
+entity GrupoInstrumental {
+    codigo String required maxlength(20)
+    nombre String required maxlength(100)
+    descripcion String maxlength(250)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+entity TipoInstrumento {
+    nombre String required maxlength(100)
+    descripcion String maxlength(250)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+entity LaboratorioCalibracion {
+    nombre String required maxlength(150)
+    ruc String maxlength(20)
+    direccion String maxlength(250)
+    telefono String maxlength(30)
+    correo String maxlength(100)
+    estado String required maxlength(20)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+entity Activo {
+    codigo String required maxlength(40)
+    nombre String required maxlength(150)
+
+    marca String maxlength(100)
+    modelo String maxlength(100)
+    numeroSerie String maxlength(100)
+
+    rango String maxlength(100)
+    resolucion String maxlength(100)
+
+    ubicacion String maxlength(150)
+
+    estado String required maxlength(50)
+
+    observaciones String maxlength(500)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+entity Calibracion {
+    fechaEnvio LocalDate
+    fechaCalibracion LocalDate
+    fechaRetorno LocalDate
+    fechaVencimiento LocalDate
+
+    numeroCertificado String maxlength(100)
+
+    resultado String maxlength(50)
+
+    observaciones String maxlength(500)
+
+    fechaCreacion Instant
+    usuarioCreacion String maxlength(50)
+    fechaModificacion Instant
+    usuarioModificacion String maxlength(50)
+}
+
+relationship ManyToOne {
+
+    Usuario{rol(nombre) required}
+        to Rol
+
+    Activo{grupo(nombre) required}
+        to GrupoInstrumental
+
+    Activo{tipoInstrumento(nombre) required}
+        to TipoInstrumento
+
+    Calibracion{activo(codigo) required}
+        to Activo
+
+    Calibracion{laboratorio(nombre) required}
+        to LaboratorioCalibracion
+
+    RecuperacionPassword{usuario(username) required}
+        to Usuario
+}

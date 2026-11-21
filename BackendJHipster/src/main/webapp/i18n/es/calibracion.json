@@ -1,0 +1,36 @@
+{
+  "ejemplo01App": {
+    "calibracion": {
+      "home": {
+        "title": "Calibracions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Calibracion",
+        "createOrEditLabel": "Crear o editar Calibracion",
+        "notFound": "Ningún Calibracions encontrado"
+      },
+      "created": "Un nuevo Calibracion ha sido creado con el identificador {{ param }}",
+      "updated": "Un Calibracion ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Calibracion ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Calibracion {{ id }}?"
+      },
+      "detail": {
+        "title": "Calibracion"
+      },
+      "id": "ID",
+      "fechaEnvio": "Fecha Envio",
+      "fechaCalibracion": "Fecha Calibracion",
+      "fechaRetorno": "Fecha Retorno",
+      "fechaVencimiento": "Fecha Vencimiento",
+      "numeroCertificado": "Numero Certificado",
+      "resultado": "Resultado",
+      "observaciones": "Observaciones",
+      "fechaCreacion": "Fecha Creacion",
+      "usuarioCreacion": "Usuario Creacion",
+      "fechaModificacion": "Fecha Modificacion",
+      "usuarioModificacion": "Usuario Modificacion",
+      "activo": "Activo",
+      "laboratorio": "Laboratorio"
+    }
+  }
+}

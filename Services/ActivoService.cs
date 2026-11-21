@@ -112,10 +112,4 @@ public class ActivoService
             request
         );
     }
-
-        return await ActualizarAsync(
-            activo.Id,
-            request
-        );
-    }
 }

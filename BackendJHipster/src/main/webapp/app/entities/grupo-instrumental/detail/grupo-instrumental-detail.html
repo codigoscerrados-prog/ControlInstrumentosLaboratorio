@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (grupoInstrumental(); as grupoInstrumentalRef) {
+      <div>
+        <h2 data-cy="grupoInstrumentalDetailsHeading">
+          <span jhiTranslate="ejemplo01App.grupoInstrumental.detail.title">Grupo Instrumental</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.codigo">Codigo</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.codigo }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.nombre">Nombre</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.nombre }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.descripcion">Descripcion</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.descripcion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.grupoInstrumental.usuarioModificacion">Usuario Modificacion</span></dt>
+          <dd>
+            <span>{{ grupoInstrumentalRef.usuarioModificacion }}</span>
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/grupo-instrumental', grupoInstrumentalRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,199 @@
+<div>
+  <h2 id="page-heading" data-cy="ActivoHeading">
+    <span jhiTranslate="ejemplo01App.activo.home.title">Activos</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="ejemplo01App.activo.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-activo"
+        [routerLink]="['/activo/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="ejemplo01App.activo.home.createLabel">Crear nuevo Activo</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (activos().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="ejemplo01App.activo.home.notFound">Ningún Activos encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="codigo">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.codigo">Codigo</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nombre">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.nombre">Nombre</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="marca">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.marca">Marca</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modelo">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.modelo">Modelo</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="numeroSerie">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.numeroSerie">Numero Serie</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="rango">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.rango">Rango</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="resolucion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.resolucion">Resolucion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ubicacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.ubicacion">Ubicacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="estado">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.estado">Estado</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="observaciones">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.observaciones">Observaciones</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.fechaCreacion">Fecha Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.usuarioCreacion">Usuario Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.fechaModificacion">Fecha Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.usuarioModificacion">Usuario Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="grupo.nombre">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.grupo">Grupo</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tipoInstrumento.nombre">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.activo.tipoInstrumento">Tipo Instrumento</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (activo of activos(); track trackId(activo)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/activo', activo.id, 'view']">{{ activo.id }}</a>
+              </td>
+              <td>{{ activo.codigo }}</td>
+              <td>{{ activo.nombre }}</td>
+              <td>{{ activo.marca }}</td>
+              <td>{{ activo.modelo }}</td>
+              <td>{{ activo.numeroSerie }}</td>
+              <td>{{ activo.rango }}</td>
+              <td>{{ activo.resolucion }}</td>
+              <td>{{ activo.ubicacion }}</td>
+              <td>{{ activo.estado }}</td>
+              <td>{{ activo.observaciones }}</td>
+              <td>{{ activo.fechaCreacion | formatMediumDatetime }}</td>
+              <td>{{ activo.usuarioCreacion }}</td>
+              <td>{{ activo.fechaModificacion | formatMediumDatetime }}</td>
+              <td>{{ activo.usuarioModificacion }}</td>
+              <td>
+                @if (activo.grupo) {
+                  <div>
+                    <a [routerLink]="['/grupo-instrumental', activo.grupo.id, 'view']">{{ activo.grupo.nombre }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (activo.tipoInstrumento) {
+                  <div>
+                    <a [routerLink]="['/tipo-instrumento', activo.tipoInstrumento.id, 'view']">{{ activo.tipoInstrumento.nombre }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/activo', activo.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a [routerLink]="['/activo', activo.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(activo)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

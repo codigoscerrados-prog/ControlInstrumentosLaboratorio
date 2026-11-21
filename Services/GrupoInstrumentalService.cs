@@ -22,4 +22,40 @@ public class GrupoInstrumentalService
 
         return grupos ?? new List<GrupoInstrumentalUi>();
     }
+
+    public async Task<GrupoInstrumentalUi?> ObtenerAsync(
+        long id)
+    {
+        return await _backend
+            .GetAsync<GrupoInstrumentalUi>(
+                $"api/grupo-instrumentals/{id}"
+            );
+    }
+
+    public async Task<GrupoInstrumentalUi?> CrearAsync(
+        GrupoInstrumentalRequest grupo)
+    {
+        return await _backend
+            .PostAsync<
+                GrupoInstrumentalRequest,
+                GrupoInstrumentalUi>(
+                    "api/grupo-instrumentals",
+                    grupo
+                );
+    }
+
+    public async Task<GrupoInstrumentalUi?> ActualizarAsync(
+        long id,
+        GrupoInstrumentalRequest grupo)
+    {
+        grupo.Id = id;
+
+        return await _backend
+            .PutAsync<
+                GrupoInstrumentalRequest,
+                GrupoInstrumentalUi>(
+                    $"api/grupo-instrumentals/{id}",
+                    grupo
+                );
+    }
 }

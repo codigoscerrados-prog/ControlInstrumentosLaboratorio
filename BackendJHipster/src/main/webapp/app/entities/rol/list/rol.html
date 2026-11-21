@@ -1,0 +1,117 @@
+<div>
+  <h2 id="page-heading" data-cy="RolHeading">
+    <span jhiTranslate="ejemplo01App.rol.home.title">Rols</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="ejemplo01App.rol.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-rol"
+        [routerLink]="['/rol/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="ejemplo01App.rol.home.createLabel">Crear nuevo Rol</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (rols().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="ejemplo01App.rol.home.notFound">Ningún Rols encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nombre">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.rol.nombre">Nombre</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="descripcion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.rol.descripcion">Descripcion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.rol.fechaCreacion">Fecha Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.rol.usuarioCreacion">Usuario Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.rol.fechaModificacion">Fecha Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.rol.usuarioModificacion">Usuario Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rol of rols(); track trackId(rol)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/rol', rol.id, 'view']">{{ rol.id }}</a>
+              </td>
+              <td>{{ rol.nombre }}</td>
+              <td>{{ rol.descripcion }}</td>
+              <td>{{ rol.fechaCreacion | formatMediumDatetime }}</td>
+              <td>{{ rol.usuarioCreacion }}</td>
+              <td>{{ rol.fechaModificacion | formatMediumDatetime }}</td>
+              <td>{{ rol.usuarioModificacion }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/rol', rol.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a [routerLink]="['/rol', rol.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(rol)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

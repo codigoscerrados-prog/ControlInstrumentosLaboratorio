@@ -1,7 +1,11 @@
 ﻿@page "/tipos-instrumento"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject TipoInstrumentoService TipoService
+
 
 <div class="ci-page-header">
     <div>
@@ -15,64 +19,129 @@
     </button>
 </div>
 
-<div class="ci-card">
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
 
-        <tbody>
-            @foreach (var tipo in tipos)
-            {
-                <tr>
-                    <td>@tipo.Nombre</td>
-                    <td>@tipo.Descripcion</td>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando tipos de instrumento...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card">
 
-                    <td>
-                        <button class="ci-btn ci-btn-light"
-                                @onclick="() => Editar(tipo.Id)">
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        <div class="ci-table-wrap">
+
+            <table class="ci-table">
+
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (!tipos.Any())
+                    {
+                        <tr>
+                            <td colspan="3">
+                                No existen tipos registrados.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var tipo in tipos)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @tipo.Nombre
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @tipo.Descripcion
+                                </td>
+
+                                <td>
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Editar(tipo.Id)">
+                                        Editar
+                                    </button>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+
 
 @code {
-    private readonly List<TipoInstrumentoUi> tipos =
-    [
-        new()
-        {
-            Id = 1,
-            Nombre = "Manómetro",
-            Descripcion = "Medición de presión"
-        },
 
-        new()
-        {
-            Id = 2,
-            Nombre = "Termómetro",
-            Descripcion = "Medición de temperatura"
-        },
+    private List<TipoInstrumentoUi> tipos =
+        new();
 
-        new()
+    private bool cargando = true;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTipos();
+    }
+
+
+    private async Task CargarTipos()
+    {
+        try
         {
-            Id = 3,
-            Nombre = "Caudalímetro",
-            Descripcion = "Medición de caudal"
+            cargando = true;
+
+            error = "";
+
+            tipos =
+                await TipoService.ListarAsync();
         }
-    ];
+        catch (Exception ex)
+        {
+            error =
+                "No se pudieron cargar los tipos. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
 
     private void Nuevo()
     {
-        Navigation.NavigateTo("/tipos-instrumento/nuevo");
+        Navigation.NavigateTo(
+            "/tipos-instrumento/nuevo"
+        );
     }
+
 
     private void Editar(long id)
     {

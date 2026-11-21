@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="floatType" value="float4" dbms="h2"/>
+    <property name="uuidType" value="uuid" dbms="h2"/>
+    <property name="datetimeType" value="datetime(6)" dbms="h2"/>
+    <property name="timeType" value="time(6)" dbms="h2"/>
+    <property name="clobType" value="clob" dbms="h2"/>
+    <property name="blobType" value="blob" dbms="h2"/>
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="floatType" value="float" dbms="oracle"/>
+    <property name="clobType" value="clob" dbms="oracle"/>
+    <property name="blobType" value="blob" dbms="oracle"/>
+    <property name="uuidType" value="uuid" dbms="oracle"/>
+    <property name="datetimeType" value="datetime" dbms="oracle"/>
+    <property name="timeType" value="time" dbms="oracle"/>
+
+    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014740_added_entity_Rol.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014741_added_entity_Usuario.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014742_added_entity_RecuperacionPassword.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014743_added_entity_GrupoInstrumental.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014744_added_entity_TipoInstrumento.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014745_added_entity_LaboratorioCalibracion.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014746_added_entity_Activo.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014747_added_entity_Calibracion.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20261028014741_added_entity_constraints_Usuario.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014742_added_entity_constraints_RecuperacionPassword.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014746_added_entity_constraints_Activo.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20261028014747_added_entity_constraints_Calibracion.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+</databaseChangeLog>

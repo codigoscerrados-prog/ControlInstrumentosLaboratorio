@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (usuario(); as usuarioRef) {
+      <div>
+        <h2 data-cy="usuarioDetailsHeading"><span jhiTranslate="ejemplo01App.usuario.detail.title">Usuario</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ usuarioRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.username">Username</span></dt>
+          <dd>
+            <span>{{ usuarioRef.username }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.password">Password</span></dt>
+          <dd>
+            <span>{{ usuarioRef.password }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.correo">Correo</span></dt>
+          <dd>
+            <span>{{ usuarioRef.correo }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.estado">Estado</span></dt>
+          <dd>
+            <span>{{ usuarioRef.estado }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ usuarioRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ usuarioRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ usuarioRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.usuarioModificacion">Usuario Modificacion</span></dt>
+          <dd>
+            <span>{{ usuarioRef.usuarioModificacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.usuario.rol">Rol</span></dt>
+          <dd>
+            @if (usuario()!.rol) {
+              <div>
+                <a [routerLink]="['/rol', usuario()!.rol?.id, 'view']">{{ usuarioRef.rol?.nombre }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/usuario', usuarioRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

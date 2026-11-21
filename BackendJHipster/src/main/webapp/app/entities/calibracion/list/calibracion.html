@@ -1,0 +1,180 @@
+<div>
+  <h2 id="page-heading" data-cy="CalibracionHeading">
+    <span jhiTranslate="ejemplo01App.calibracion.home.title">Calibracions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="ejemplo01App.calibracion.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-calibracion"
+        [routerLink]="['/calibracion/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="ejemplo01App.calibracion.home.createLabel">Crear nuevo Calibracion</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (calibracions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="ejemplo01App.calibracion.home.notFound">Ningún Calibracions encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaEnvio">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.fechaEnvio">Fecha Envio</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaCalibracion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.fechaCalibracion">Fecha Calibracion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaRetorno">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.fechaRetorno">Fecha Retorno</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaVencimiento">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.fechaVencimiento">Fecha Vencimiento</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="numeroCertificado">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.numeroCertificado">Numero Certificado</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="resultado">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.resultado">Resultado</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="observaciones">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.observaciones">Observaciones</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.fechaCreacion">Fecha Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.usuarioCreacion">Usuario Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.fechaModificacion">Fecha Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.usuarioModificacion">Usuario Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="activo.codigo">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.activo">Activo</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="laboratorio.nombre">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.calibracion.laboratorio">Laboratorio</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (calibracion of calibracions(); track trackId(calibracion)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/calibracion', calibracion.id, 'view']">{{ calibracion.id }}</a>
+              </td>
+              <td>{{ calibracion.fechaEnvio | formatMediumDate }}</td>
+              <td>{{ calibracion.fechaCalibracion | formatMediumDate }}</td>
+              <td>{{ calibracion.fechaRetorno | formatMediumDate }}</td>
+              <td>{{ calibracion.fechaVencimiento | formatMediumDate }}</td>
+              <td>{{ calibracion.numeroCertificado }}</td>
+              <td>{{ calibracion.resultado }}</td>
+              <td>{{ calibracion.observaciones }}</td>
+              <td>{{ calibracion.fechaCreacion | formatMediumDatetime }}</td>
+              <td>{{ calibracion.usuarioCreacion }}</td>
+              <td>{{ calibracion.fechaModificacion | formatMediumDatetime }}</td>
+              <td>{{ calibracion.usuarioModificacion }}</td>
+              <td>
+                @if (calibracion.activo) {
+                  <div>
+                    <a [routerLink]="['/activo', calibracion.activo.id, 'view']">{{ calibracion.activo.codigo }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (calibracion.laboratorio) {
+                  <div>
+                    <a [routerLink]="['/laboratorio-calibracion', calibracion.laboratorio.id, 'view']">{{
+                      calibracion.laboratorio.nombre
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/calibracion', calibracion.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a [routerLink]="['/calibracion', calibracion.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(calibracion)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

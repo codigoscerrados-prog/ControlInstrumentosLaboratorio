@@ -2,8 +2,11 @@
 
 @using BlazorApp1.Components.Models
 @using BlazorApp1.Components.Shared
+@using BlazorApp1.Services
 
 @inject NavigationManager Navigation
+@inject LaboratorioCalibracionService LaboratorioService
+
 
 <div class="ci-page-header">
     <div>
@@ -17,74 +20,138 @@
     </button>
 </div>
 
-<div class="ci-card">
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>RUC</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
 
-        <tbody>
-            @foreach (var laboratorio in laboratorios)
-            {
-                <tr>
-                    <td>@laboratorio.Nombre</td>
-                    <td>@laboratorio.Ruc</td>
-                    <td>@laboratorio.Telefono</td>
-                    <td>@laboratorio.Correo</td>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando laboratorios...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card">
 
-                    <td>
-                        <EstadoBadge Estado="@laboratorio.Estado" />
-                    </td>
+        <div class="ci-table-wrap">
 
-                    <td>
-                        <button class="ci-btn ci-btn-light"
-                                @onclick="() => Editar(laboratorio.Id)">
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            <table class="ci-table">
+
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>RUC</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (!laboratorios.Any())
+                    {
+                        <tr>
+                            <td colspan="6">
+                                No existen laboratorios registrados.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var laboratorio in laboratorios)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @laboratorio.Nombre
+                                    </strong>
+                                </td>
+
+                                <td>@laboratorio.Ruc</td>
+
+                                <td>@laboratorio.Telefono</td>
+
+                                <td>@laboratorio.Correo</td>
+
+                                <td>
+                                    <EstadoBadge Estado="@laboratorio.Estado" />
+                                </td>
+
+                                <td>
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Editar(laboratorio.Id)">
+                                        Editar
+                                    </button>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+
 
 @code {
-    private readonly List<LaboratorioCalibracionUi> laboratorios =
-    [
-        new()
-        {
-            Id = 1,
-            Nombre = "METROIL",
-            Ruc = "20123456789",
-            Direccion = "Lima",
-            Telefono = "01-5555555",
-            Correo = "calibracion@metroil.test",
-            Estado = "ACTIVO"
-        },
 
-        new()
+    private List<LaboratorioCalibracionUi>
+        laboratorios = new();
+
+    private bool cargando = true;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarLaboratorios();
+    }
+
+
+    private async Task CargarLaboratorios()
+    {
+        try
         {
-            Id = 2,
-            Nombre = "INACAL",
-            Ruc = "20500000001",
-            Direccion = "Lima",
-            Telefono = "01-4444444",
-            Correo = "contacto@inacal.test",
-            Estado = "ACTIVO"
+            cargando = true;
+
+            error = "";
+
+            laboratorios =
+                await LaboratorioService.ListarAsync();
         }
-    ];
+        catch (Exception ex)
+        {
+            error =
+                "No se pudieron cargar los laboratorios. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
 
     private void Nuevo()
     {
-        Navigation.NavigateTo("/laboratorios/nuevo");
+        Navigation.NavigateTo(
+            "/laboratorios/nuevo"
+        );
     }
+
 
     private void Editar(long id)
     {

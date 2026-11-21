@@ -1,7 +1,11 @@
 ﻿@page "/grupos"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject GrupoInstrumentalService GrupoService
+
 
 <div class="ci-page-header">
     <div>
@@ -15,72 +19,135 @@
     </button>
 </div>
 
-<div class="ci-card">
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
 
-        <tbody>
-            @foreach (var grupo in grupos)
-            {
-                <tr>
-                    <td>@grupo.Codigo</td>
-                    <td>@grupo.Nombre</td>
-                    <td>@grupo.Descripcion</td>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando grupos...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card">
 
-                    <td>
-                        <button class="ci-btn ci-btn-light"
-                                @onclick="() => Editar(grupo.Id)">
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        <div class="ci-table-wrap">
+
+            <table class="ci-table">
+
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (!grupos.Any())
+                    {
+                        <tr>
+                            <td colspan="4">
+                                No existen grupos registrados.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var grupo in grupos)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @grupo.Codigo
+                                    </strong>
+                                </td>
+
+                                <td>@grupo.Nombre</td>
+
+                                <td>@grupo.Descripcion</td>
+
+                                <td>
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Editar(grupo.Id)">
+                                        Editar
+                                    </button>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+
 
 @code {
-    private readonly List<GrupoInstrumentalUi> grupos =
-    [
-        new()
-        {
-            Id = 1,
-            Codigo = "B03",
-            Nombre = "Banco 3",
-            Descripcion = "Banco de verificación"
-        },
 
-        new()
-        {
-            Id = 2,
-            Codigo = "PAT",
-            Nombre = "Patrones",
-            Descripcion = "Instrumentos patrón"
-        },
+    private List<GrupoInstrumentalUi> grupos =
+        new();
 
-        new()
+    private bool cargando = true;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarGrupos();
+    }
+
+
+    private async Task CargarGrupos()
+    {
+        try
         {
-            Id = 3,
-            Codigo = "RESP",
-            Nombre = "Respaldo",
-            Descripcion = "Instrumentos de respaldo"
+            cargando = true;
+
+            error = "";
+
+            grupos =
+                await GrupoService.ListarAsync();
         }
-    ];
+        catch (Exception ex)
+        {
+            error =
+                "No se pudieron cargar los grupos. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
 
     private void Nuevo()
     {
-        Navigation.NavigateTo("/grupos/nuevo");
+        Navigation.NavigateTo(
+            "/grupos/nuevo"
+        );
     }
+
 
     private void Editar(long id)
     {
-        Navigation.NavigateTo($"/grupos/editar/{id}");
+        Navigation.NavigateTo(
+            $"/grupos/editar/{id}"
+        );
     }
 }

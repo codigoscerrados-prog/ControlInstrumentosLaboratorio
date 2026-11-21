@@ -1,0 +1,39 @@
+{
+  "ejemplo01App": {
+    "activo": {
+      "home": {
+        "title": "Activos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Activo",
+        "createOrEditLabel": "Crear o editar Activo",
+        "notFound": "Ningún Activos encontrado"
+      },
+      "created": "Un nuevo Activo ha sido creado con el identificador {{ param }}",
+      "updated": "Un Activo ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Activo ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Activo {{ id }}?"
+      },
+      "detail": {
+        "title": "Activo"
+      },
+      "id": "ID",
+      "codigo": "Codigo",
+      "nombre": "Nombre",
+      "marca": "Marca",
+      "modelo": "Modelo",
+      "numeroSerie": "Numero Serie",
+      "rango": "Rango",
+      "resolucion": "Resolucion",
+      "ubicacion": "Ubicacion",
+      "estado": "Estado",
+      "observaciones": "Observaciones",
+      "fechaCreacion": "Fecha Creacion",
+      "usuarioCreacion": "Usuario Creacion",
+      "fechaModificacion": "Fecha Modificacion",
+      "usuarioModificacion": "Usuario Modificacion",
+      "grupo": "Grupo",
+      "tipoInstrumento": "Tipo Instrumento"
+    }
+  }
+}

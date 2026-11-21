@@ -1,0 +1,92 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (calibracion(); as calibracionRef) {
+      <div>
+        <h2 data-cy="calibracionDetailsHeading"><span jhiTranslate="ejemplo01App.calibracion.detail.title">Calibracion</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ calibracionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.fechaEnvio">Fecha Envio</span></dt>
+          <dd>
+            <span>{{ calibracionRef.fechaEnvio | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.fechaCalibracion">Fecha Calibracion</span></dt>
+          <dd>
+            <span>{{ calibracionRef.fechaCalibracion | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.fechaRetorno">Fecha Retorno</span></dt>
+          <dd>
+            <span>{{ calibracionRef.fechaRetorno | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.fechaVencimiento">Fecha Vencimiento</span></dt>
+          <dd>
+            <span>{{ calibracionRef.fechaVencimiento | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.numeroCertificado">Numero Certificado</span></dt>
+          <dd>
+            <span>{{ calibracionRef.numeroCertificado }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.resultado">Resultado</span></dt>
+          <dd>
+            <span>{{ calibracionRef.resultado }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.observaciones">Observaciones</span></dt>
+          <dd>
+            <span>{{ calibracionRef.observaciones }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ calibracionRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ calibracionRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ calibracionRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.usuarioModificacion">Usuario Modificacion</span></dt>
+          <dd>
+            <span>{{ calibracionRef.usuarioModificacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.activo">Activo</span></dt>
+          <dd>
+            @if (calibracion()!.activo) {
+              <div>
+                <a [routerLink]="['/activo', calibracion()!.activo?.id, 'view']">{{ calibracionRef.activo?.codigo }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.calibracion.laboratorio">Laboratorio</span></dt>
+          <dd>
+            @if (calibracion()!.laboratorio) {
+              <div>
+                <a [routerLink]="['/laboratorio-calibracion', calibracion()!.laboratorio?.id, 'view']">{{
+                  calibracionRef.laboratorio?.nombre
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/calibracion', calibracionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

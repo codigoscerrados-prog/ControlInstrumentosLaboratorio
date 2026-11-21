@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (cursos(); as cursosRef) {
+      <div>
+        <h2 data-cy="cursosDetailsHeading"><span jhiTranslate="ejemplo01App.cursos.detail.title">Cursos</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ cursosRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.cursos.curso">Curso</span></dt>
+          <dd>
+            <span>{{ cursosRef.curso }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.cursos.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ cursosRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.cursos.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ cursosRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.cursos.usuairoModificacion">Usuairo Modificacion</span></dt>
+          <dd>
+            <span>{{ cursosRef.usuairoModificacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.cursos.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ cursosRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/cursos', cursosRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

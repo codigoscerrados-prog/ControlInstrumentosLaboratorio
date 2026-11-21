@@ -1,91 +1,221 @@
 ﻿@page "/calibraciones"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject CalibracionService CalibracionService
+
 
 <div class="ci-page-header">
+
     <div>
         <h1>Calibraciones</h1>
-        <p>Historial de calibración de los instrumentos.</p>
+
+        <p>
+            Historial de calibración de los instrumentos.
+        </p>
     </div>
 
     <button class="ci-btn ci-btn-primary"
             @onclick="Nueva">
+
         + Nueva calibración
+
     </button>
+
 </div>
 
-<div class="ci-card">
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Instrumento</th>
-                <th>Laboratorio</th>
-                <th>Fecha envío</th>
-                <th>Fecha calibración</th>
-                <th>Vencimiento</th>
-                <th>Certificado</th>
-                <th>Resultado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
 
-        <tbody>
-            @foreach (var c in calibraciones)
-            {
-                <tr>
-                    <td>@c.ActivoCodigo</td>
-                    <td>@c.LaboratorioNombre</td>
-                    <td>@Fecha(c.FechaEnvio)</td>
-                    <td>@Fecha(c.FechaCalibracion)</td>
-                    <td>@Fecha(c.FechaVencimiento)</td>
-                    <td>@c.NumeroCertificado</td>
-                    <td>@c.Resultado</td>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando calibraciones...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card">
 
-                    <td>
-                        <button class="ci-btn ci-btn-light"
-                                @onclick="() => Editar(c.Id)">
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        <div class="ci-table-wrap">
+
+            <table class="ci-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Instrumento</th>
+                        <th>Laboratorio</th>
+                        <th>Fecha envío</th>
+                        <th>Fecha calibración</th>
+                        <th>Vencimiento</th>
+                        <th>Certificado</th>
+                        <th>Resultado</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (!calibraciones.Any())
+                    {
+                        <tr>
+                            <td colspan="8">
+                                No existen calibraciones registradas.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var c in calibraciones)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @ObtenerCodigoActivo(c)
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @ObtenerLaboratorio(c)
+                                </td>
+
+                                <td>
+                                    @Fecha(c.FechaEnvio)
+                                </td>
+
+                                <td>
+                                    @Fecha(c.FechaCalibracion)
+                                </td>
+
+                                <td>
+                                    @Fecha(c.FechaVencimiento)
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(
+                                        c.NumeroCertificado)
+                                        ? "-"
+                                        : c.NumeroCertificado)
+                                </td>
+
+                                <td>
+                                    @c.Resultado
+                                </td>
+
+                                <td class="ci-actions">
+
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Editar(c.Id)">
+
+                                        Editar
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+
 
 @code {
-    private readonly List<CalibracionUi> calibraciones =
-    [
-        new()
+
+    private List<CalibracionUi> calibraciones =
+        new();
+
+
+    private bool cargando = true;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCalibraciones();
+    }
+
+
+    private async Task CargarCalibraciones()
+    {
+        try
         {
-            Id = 1,
-            ActivoId = 1,
-            ActivoCodigo = "MED-M-26",
-            ActivoNombre = "Manómetro digital",
-            LaboratorioId = 1,
-            LaboratorioNombre = "METROIL",
-            FechaEnvio = new DateTime(2026, 5, 10),
-            FechaCalibracion = new DateTime(2026, 5, 15),
-            FechaRetorno = new DateTime(2026, 5, 19),
-            FechaVencimiento = new DateTime(2027, 5, 15),
-            NumeroCertificado = "CAL-026-2026",
-            Resultado = "CONFORME"
+            cargando = true;
+
+            error = "";
+
+            calibraciones =
+                await CalibracionService.ListarAsync();
         }
-    ];
+        catch (Exception ex)
+        {
+            error =
+                "No se pudieron cargar las calibraciones. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private static string ObtenerCodigoActivo(
+        CalibracionUi calibracion)
+    {
+        return calibracion.Activo?.Codigo
+               ?? "-";
+    }
+
+
+    private static string ObtenerLaboratorio(
+        CalibracionUi calibracion)
+    {
+        return calibracion.Laboratorio?.Nombre
+               ?? calibracion
+                   .LaboratorioCalibracion?.Nombre
+               ?? "-";
+    }
+
 
     private void Nueva()
     {
-        Navigation.NavigateTo("/calibraciones/nueva");
+        Navigation.NavigateTo(
+            "/calibraciones/nueva"
+        );
     }
+
 
     private void Editar(long id)
     {
-        Navigation.NavigateTo($"/calibraciones/editar/{id}");
+        Navigation.NavigateTo(
+            $"/calibraciones/editar/{id}"
+        );
     }
 
-    private static string Fecha(DateTime? fecha)
+
+    private static string Fecha(
+        DateTime? fecha)
     {
-        return fecha?.ToString("dd/MM/yyyy") ?? "-";
+        return fecha?.ToString(
+            "dd/MM/yyyy"
+        ) ?? "-";
     }
 }

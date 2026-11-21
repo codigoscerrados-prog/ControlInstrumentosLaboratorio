@@ -1,0 +1,33 @@
+{
+  "ejemplo01App": {
+    "laboratorioCalibracion": {
+      "home": {
+        "title": "Laboratorio Calibracions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Laboratorio Calibracion",
+        "createOrEditLabel": "Crear o editar Laboratorio Calibracion",
+        "notFound": "Ningún Laboratorio Calibracions encontrado"
+      },
+      "created": "Un nuevo Laboratorio Calibracion ha sido creado con el identificador {{ param }}",
+      "updated": "Un Laboratorio Calibracion ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Laboratorio Calibracion ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Laboratorio Calibracion {{ id }}?"
+      },
+      "detail": {
+        "title": "Laboratorio Calibracion"
+      },
+      "id": "ID",
+      "nombre": "Nombre",
+      "ruc": "Ruc",
+      "direccion": "Direccion",
+      "telefono": "Telefono",
+      "correo": "Correo",
+      "estado": "Estado",
+      "fechaCreacion": "Fecha Creacion",
+      "usuarioCreacion": "Usuario Creacion",
+      "fechaModificacion": "Fecha Modificacion",
+      "usuarioModificacion": "Usuario Modificacion"
+    }
+  }
+}

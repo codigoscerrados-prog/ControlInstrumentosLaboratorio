@@ -14,8 +14,16 @@
 
             <div class="ci-brand">
 
-                <div class="ci-brand-icon">
-                    ⚗
+                <div class="ci-user-info">
+
+                    <strong>
+                        @Session.Username
+                    </strong>
+
+                    <small>
+                        @Session.Rol
+                    </small>
+
                 </div>
 
                 <div>
@@ -61,15 +69,18 @@
                     Tipos de instrumento
                 </NavLink>
 
-                <NavLink href="/usuarios"
-                         Match="NavLinkMatch.Prefix">
-                    Usuarios
-                </NavLink>
+                @if (Session.EsAdmin)
+                {
+                    <NavLink href="/usuarios"
+                             Match="NavLinkMatch.Prefix">
+                        Usuarios
+                    </NavLink>
 
-                <NavLink href="/roles"
-                         Match="NavLinkMatch.Prefix">
-                    Roles
-                </NavLink>
+                    <NavLink href="/roles"
+                             Match="NavLinkMatch.Prefix">
+                        Roles
+                    </NavLink>
+                }
 
                 <div class="ci-nav-separator"></div>
 

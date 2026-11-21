@@ -1,0 +1,218 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-laboratorio-calibracion-heading"
+        data-cy="LaboratorioCalibracionCreateUpdateHeading"
+        jhiTranslate="ejemplo01App.laboratorioCalibracion.home.createOrEditLabel"
+      >
+        Crear o editar Laboratorio Calibracion
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let nombreRef = editForm.get('nombre')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_nombre" jhiTranslate="ejemplo01App.laboratorioCalibracion.nombre">Nombre</label>
+          <input type="text" class="form-control" name="nombre" id="field_nombre" data-cy="nombre" formControlName="nombre" />
+          @if (nombreRef.invalid && (nombreRef.dirty || nombreRef.touched)) {
+            <div>
+              @if (nombreRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              @if (nombreRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '150' }"
+                  >Este campo no puede superar más de 150 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let rucRef = editForm.get('ruc')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_ruc" jhiTranslate="ejemplo01App.laboratorioCalibracion.ruc">Ruc</label>
+          <input type="text" class="form-control" name="ruc" id="field_ruc" data-cy="ruc" formControlName="ruc" />
+          @if (rucRef.invalid && (rucRef.dirty || rucRef.touched)) {
+            <div>
+              @if (rucRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >Este campo no puede superar más de 20 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let direccionRef = editForm.get('direccion')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_direccion" jhiTranslate="ejemplo01App.laboratorioCalibracion.direccion">Direccion</label>
+          <input type="text" class="form-control" name="direccion" id="field_direccion" data-cy="direccion" formControlName="direccion" />
+          @if (direccionRef.invalid && (direccionRef.dirty || direccionRef.touched)) {
+            <div>
+              @if (direccionRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '250' }"
+                  >Este campo no puede superar más de 250 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let telefonoRef = editForm.get('telefono')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_telefono" jhiTranslate="ejemplo01App.laboratorioCalibracion.telefono">Telefono</label>
+          <input type="text" class="form-control" name="telefono" id="field_telefono" data-cy="telefono" formControlName="telefono" />
+          @if (telefonoRef.invalid && (telefonoRef.dirty || telefonoRef.touched)) {
+            <div>
+              @if (telefonoRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '30' }"
+                  >Este campo no puede superar más de 30 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let correoRef = editForm.get('correo')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_correo" jhiTranslate="ejemplo01App.laboratorioCalibracion.correo">Correo</label>
+          <input type="text" class="form-control" name="correo" id="field_correo" data-cy="correo" formControlName="correo" />
+          @if (correoRef.invalid && (correoRef.dirty || correoRef.touched)) {
+            <div>
+              @if (correoRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >Este campo no puede superar más de 100 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let estadoRef = editForm.get('estado')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_estado" jhiTranslate="ejemplo01App.laboratorioCalibracion.estado">Estado</label>
+          <input type="text" class="form-control" name="estado" id="field_estado" data-cy="estado" formControlName="estado" />
+          @if (estadoRef.invalid && (estadoRef.dirty || estadoRef.touched)) {
+            <div>
+              @if (estadoRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              @if (estadoRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >Este campo no puede superar más de 20 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_fechaCreacion" jhiTranslate="ejemplo01App.laboratorioCalibracion.fechaCreacion"
+            >Fecha Creacion</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_fechaCreacion"
+              data-cy="fechaCreacion"
+              type="datetime-local"
+              class="form-control"
+              name="fechaCreacion"
+              formControlName="fechaCreacion"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let usuarioCreacionRef = editForm.get('usuarioCreacion')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_usuarioCreacion" jhiTranslate="ejemplo01App.laboratorioCalibracion.usuarioCreacion"
+            >Usuario Creacion</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="usuarioCreacion"
+            id="field_usuarioCreacion"
+            data-cy="usuarioCreacion"
+            formControlName="usuarioCreacion"
+          />
+          @if (usuarioCreacionRef.invalid && (usuarioCreacionRef.dirty || usuarioCreacionRef.touched)) {
+            <div>
+              @if (usuarioCreacionRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '50' }"
+                  >Este campo no puede superar más de 50 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_fechaModificacion" jhiTranslate="ejemplo01App.laboratorioCalibracion.fechaModificacion"
+            >Fecha Modificacion</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_fechaModificacion"
+              data-cy="fechaModificacion"
+              type="datetime-local"
+              class="form-control"
+              name="fechaModificacion"
+              formControlName="fechaModificacion"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let usuarioModificacionRef = editForm.get('usuarioModificacion')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_usuarioModificacion" jhiTranslate="ejemplo01App.laboratorioCalibracion.usuarioModificacion"
+            >Usuario Modificacion</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="usuarioModificacion"
+            id="field_usuarioModificacion"
+            data-cy="usuarioModificacion"
+            formControlName="usuarioModificacion"
+          />
+          @if (usuarioModificacionRef.invalid && (usuarioModificacionRef.dirty || usuarioModificacionRef.touched)) {
+            <div>
+              @if (usuarioModificacionRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '50' }"
+                  >Este campo no puede superar más de 50 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,38 +1,54 @@
 ﻿@page "/laboratorios/nuevo"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
 
 @inject NavigationManager Navigation
+@inject LaboratorioCalibracionService LaboratorioService
+@inject SessionService Session
 
-<h1>Nuevo laboratorio</h1>
+
+<div class="ci-page-header">
+    <div>
+        <h1>Nuevo laboratorio</h1>
+        <p>Registra un laboratorio de calibración.</p>
+    </div>
+</div>
+
 
 <div class="ci-card ci-form-grid">
+
     <div>
         <label>Nombre</label>
+
         <input class="ci-input"
                @bind="laboratorio.Nombre" />
     </div>
 
     <div>
         <label>RUC</label>
+
         <input class="ci-input"
                @bind="laboratorio.Ruc" />
     </div>
 
     <div>
         <label>Dirección</label>
+
         <input class="ci-input"
                @bind="laboratorio.Direccion" />
     </div>
 
     <div>
         <label>Teléfono</label>
+
         <input class="ci-input"
                @bind="laboratorio.Telefono" />
     </div>
 
     <div>
         <label>Correo</label>
+
         <input class="ci-input"
                @bind="laboratorio.Correo" />
     </div>
@@ -42,6 +58,7 @@
 
         <select class="ci-input"
                 @bind="laboratorio.Estado">
+
             <option value="ACTIVO">
                 ACTIVO
             </option>
@@ -49,35 +66,162 @@
             <option value="INACTIVO">
                 INACTIVO
             </option>
+
         </select>
+
     </div>
+
 </div>
 
+
 <div class="ci-footer-actions">
+
     <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
+            @onclick="Cancelar"
+            disabled="@guardando">
         Cancelar
     </button>
 
     <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar
+            @onclick="Guardar"
+            disabled="@guardando">
+
+        @if (guardando)
+        {
+            <span>Guardando...</span>
+        }
+        else
+        {
+            <span>Guardar</span>
+        }
+
     </button>
+
 </div>
 
+
+@if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+
+
 @code {
+
     private LaboratorioCalibracionUi laboratorio =
         new()
         {
             Estado = "ACTIVO"
         };
 
-    private void Guardar()
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    private async Task Guardar()
     {
+        error = "";
+
+
+        if (string.IsNullOrWhiteSpace(
+                laboratorio.Nombre))
+        {
+            error =
+                "Debe ingresar el nombre.";
+
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(
+                laboratorio.Ruc))
+        {
+            error =
+                "Debe ingresar el RUC.";
+
+            return;
+        }
+
+
+        try
+        {
+            guardando = true;
+
+
+            var request =
+                new LaboratorioCalibracionRequest
+                {
+                    Nombre =
+                        laboratorio.Nombre,
+
+                    Ruc =
+                        laboratorio.Ruc,
+
+                    Direccion =
+                        laboratorio.Direccion,
+
+                    Telefono =
+                        laboratorio.Telefono,
+
+                    Correo =
+                        laboratorio.Correo,
+
+                    Estado =
+                        laboratorio.Estado,
+
+                    FechaCreacion =
+                        DateTimeOffset.UtcNow,
+
+                    UsuarioCreacion =
+                        Session.Username,
+
+                    FechaModificacion =
+                        null,
+
+                    UsuarioModificacion =
+                        null
+                };
+
+
+            var creado =
+                await LaboratorioService
+                    .CrearAsync(request);
+
+
+            if (creado is null)
+            {
+                error =
+                    "No se pudo registrar el laboratorio.";
+
+                return;
+            }
+
+
+            Navigation.NavigateTo(
+                "/laboratorios"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar el laboratorio. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
     }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/laboratorios");
+        Navigation.NavigateTo(
+            "/laboratorios"
+        );
     }
 }

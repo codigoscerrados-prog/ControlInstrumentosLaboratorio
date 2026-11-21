@@ -1,0 +1,50 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "ejemplo01",
+    "buildTool": "maven",
+    "cacheProvider": "hazelcast",
+    "clientFramework": "angular",
+    "clientTheme": "none",
+    "creationTimestamp": 1790641792953,
+    "databaseType": "sql",
+    "defaultCommand": "app",
+    "devDatabaseType": "h2Disk",
+    "enableHibernateCache": false,
+    "enableTranslation": true,
+    "entities": [
+      "Alumno",
+      "Cursos",
+      "Rol",
+      "Usuario",
+      "RecuperacionPassword",
+      "GrupoInstrumental",
+      "TipoInstrumento",
+      "LaboratorioCalibracion",
+      "Activo",
+      "Calibracion"
+    ],
+    "feignClient": null,
+    "jhipsterVersion": "9.4.0",
+    "jwtSecretKey": "YmU2YjdmMWJmMGUzNGI4MDc4M2E5N2Y0MzljOWQ2NGQ3MjBlMTc3M2NhNTllOWQ5NzdlMDYxMDFjNjFkYTllYzg1MGRjNjUxY2FkMWFjMmNiMzliNTg3MzRmYThmN2Q4MmQ4MDk1NWU0MzQxMDgxYWNiNjk2MjhjOTYzODZiNWU=",
+    "languages": ["es"],
+    "lastLiquibaseTimestamp": 1793152067000,
+    "microfrontend": null,
+    "microfrontends": [],
+    "monorepository": true,
+    "nativeLanguage": "es",
+    "packageName": "com.mycompany.myapp",
+    "prodDatabaseType": "oracle",
+    "promptValues": {
+      "nativeLanguage": "es"
+    },
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "skipCommitHook": true,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": true
+  }
+}

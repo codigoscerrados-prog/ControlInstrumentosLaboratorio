@@ -1,91 +1,286 @@
 ﻿@page "/laboratorios/editar/{Id:long}"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
 
 @inject NavigationManager Navigation
+@inject LaboratorioCalibracionService LaboratorioService
+@inject SessionService Session
 
-<h1>Editar laboratorio</h1>
 
-<div class="ci-card ci-form-grid">
+<div class="ci-page-header">
     <div>
-        <label>Nombre</label>
-        <input class="ci-input"
-               @bind="laboratorio.Nombre" />
-    </div>
-
-    <div>
-        <label>RUC</label>
-        <input class="ci-input"
-               @bind="laboratorio.Ruc" />
-    </div>
-
-    <div>
-        <label>Dirección</label>
-        <input class="ci-input"
-               @bind="laboratorio.Direccion" />
-    </div>
-
-    <div>
-        <label>Teléfono</label>
-        <input class="ci-input"
-               @bind="laboratorio.Telefono" />
-    </div>
-
-    <div>
-        <label>Correo</label>
-        <input class="ci-input"
-               @bind="laboratorio.Correo" />
-    </div>
-
-    <div>
-        <label>Estado</label>
-
-        <select class="ci-input"
-                @bind="laboratorio.Estado">
-            <option value="ACTIVO">
-                ACTIVO
-            </option>
-
-            <option value="INACTIVO">
-                INACTIVO
-            </option>
-        </select>
+        <h1>Editar laboratorio</h1>
+        <p>Modifica los datos del laboratorio.</p>
     </div>
 </div>
 
-<div class="ci-footer-actions">
-    <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
-        Cancelar
-    </button>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar cambios
-    </button>
-</div>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando laboratorio...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card ci-form-grid">
+
+        <div>
+            <label>Nombre</label>
+
+            <input class="ci-input"
+                   @bind="laboratorio.Nombre" />
+        </div>
+
+        <div>
+            <label>RUC</label>
+
+            <input class="ci-input"
+                   @bind="laboratorio.Ruc" />
+        </div>
+
+        <div>
+            <label>Dirección</label>
+
+            <input class="ci-input"
+                   @bind="laboratorio.Direccion" />
+        </div>
+
+        <div>
+            <label>Teléfono</label>
+
+            <input class="ci-input"
+                   @bind="laboratorio.Telefono" />
+        </div>
+
+        <div>
+            <label>Correo</label>
+
+            <input class="ci-input"
+                   @bind="laboratorio.Correo" />
+        </div>
+
+        <div>
+            <label>Estado</label>
+
+            <select class="ci-input"
+                    @bind="laboratorio.Estado">
+
+                <option value="ACTIVO">
+                    ACTIVO
+                </option>
+
+                <option value="INACTIVO">
+                    INACTIVO
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Cancelar"
+                disabled="@guardando">
+
+            Cancelar
+
+        </button>
+
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Guardar"
+                disabled="@guardando">
+
+            @if (guardando)
+            {
+                <span>Guardando...</span>
+            }
+            else
+            {
+                <span>Guardar cambios</span>
+            }
+
+        </button>
+
+    </div>
+}
+
 
 @code {
+
     [Parameter]
     public long Id { get; set; }
 
-    private LaboratorioCalibracionUi laboratorio = new()
-    {
-        Id = 1,
-        Nombre = "METROIL",
-        Ruc = "20123456789",
-        Direccion = "Lima",
-        Telefono = "01-5555555",
-        Correo = "calibracion@metroil.test",
-        Estado = "ACTIVO"
-    };
 
-    private void Guardar()
+    private LaboratorioCalibracionUi laboratorio =
+        new();
+
+
+    private bool cargando = true;
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
     {
+        await CargarLaboratorio();
     }
+
+
+    private async Task CargarLaboratorio()
+    {
+        try
+        {
+            cargando = true;
+
+
+            var encontrado =
+                await LaboratorioService
+                    .ObtenerAsync(Id);
+
+
+            if (encontrado is null)
+            {
+                error =
+                    "No se encontró el laboratorio.";
+
+                return;
+            }
+
+
+            laboratorio = encontrado;
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al cargar el laboratorio. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private async Task Guardar()
+    {
+        error = "";
+
+
+        if (string.IsNullOrWhiteSpace(
+                laboratorio.Nombre))
+        {
+            error =
+                "Debe ingresar el nombre.";
+
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(
+                laboratorio.Ruc))
+        {
+            error =
+                "Debe ingresar el RUC.";
+
+            return;
+        }
+
+
+        try
+        {
+            guardando = true;
+
+
+            var request =
+                new LaboratorioCalibracionRequest
+                {
+                    Id = Id,
+
+                    Nombre =
+                        laboratorio.Nombre,
+
+                    Ruc =
+                        laboratorio.Ruc,
+
+                    Direccion =
+                        laboratorio.Direccion,
+
+                    Telefono =
+                        laboratorio.Telefono,
+
+                    Correo =
+                        laboratorio.Correo,
+
+                    Estado =
+                        laboratorio.Estado,
+
+                    FechaCreacion =
+                        laboratorio.FechaCreacion,
+
+                    UsuarioCreacion =
+                        laboratorio.UsuarioCreacion,
+
+                    FechaModificacion =
+                        DateTimeOffset.UtcNow,
+
+                    UsuarioModificacion =
+                        Session.Username
+                };
+
+
+            var actualizado =
+                await LaboratorioService
+                    .ActualizarAsync(
+                        Id,
+                        request
+                    );
+
+
+            if (actualizado is null)
+            {
+                error =
+                    "No se pudieron guardar los cambios.";
+
+                return;
+            }
+
+
+            Navigation.NavigateTo(
+                "/laboratorios"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar los cambios. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/laboratorios");
+        Navigation.NavigateTo(
+            "/laboratorios"
+        );
     }
 }

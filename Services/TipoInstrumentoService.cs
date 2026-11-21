@@ -22,4 +22,40 @@ public class TipoInstrumentoService
 
         return tipos ?? new List<TipoInstrumentoUi>();
     }
+
+    public async Task<TipoInstrumentoUi?> ObtenerAsync(
+        long id)
+    {
+        return await _backend
+            .GetAsync<TipoInstrumentoUi>(
+                $"api/tipo-instrumentos/{id}"
+            );
+    }
+
+    public async Task<TipoInstrumentoUi?> CrearAsync(
+        TipoInstrumentoRequest tipo)
+    {
+        return await _backend
+            .PostAsync<
+                TipoInstrumentoRequest,
+                TipoInstrumentoUi>(
+                    "api/tipo-instrumentos",
+                    tipo
+                );
+    }
+
+    public async Task<TipoInstrumentoUi?> ActualizarAsync(
+        long id,
+        TipoInstrumentoRequest tipo)
+    {
+        tipo.Id = id;
+
+        return await _backend
+            .PutAsync<
+                TipoInstrumentoRequest,
+                TipoInstrumentoUi>(
+                    $"api/tipo-instrumentos/{id}",
+                    tipo
+                );
+    }
 }

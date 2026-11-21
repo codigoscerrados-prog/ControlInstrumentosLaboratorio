@@ -1,0 +1,132 @@
+<div>
+  <h2 id="page-heading" data-cy="GrupoInstrumentalHeading">
+    <span jhiTranslate="ejemplo01App.grupoInstrumental.home.title">Grupo Instrumentals</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="ejemplo01App.grupoInstrumental.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-grupo-instrumental"
+        [routerLink]="['/grupo-instrumental/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="ejemplo01App.grupoInstrumental.home.createLabel">Crear nuevo Grupo Instrumental</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (grupoInstrumentals().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="ejemplo01App.grupoInstrumental.home.notFound">Ningún Grupo Instrumentals encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="codigo">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.codigo">Codigo</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nombre">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.nombre">Nombre</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="descripcion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.descripcion">Descripcion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.fechaCreacion">Fecha Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.usuarioCreacion">Usuario Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.fechaModificacion">Fecha Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usuarioModificacion">
+              <div class="d-flex">
+                <span jhiTranslate="ejemplo01App.grupoInstrumental.usuarioModificacion">Usuario Modificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (grupoInstrumental of grupoInstrumentals(); track trackId(grupoInstrumental)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/grupo-instrumental', grupoInstrumental.id, 'view']">{{ grupoInstrumental.id }}</a>
+              </td>
+              <td>{{ grupoInstrumental.codigo }}</td>
+              <td>{{ grupoInstrumental.nombre }}</td>
+              <td>{{ grupoInstrumental.descripcion }}</td>
+              <td>{{ grupoInstrumental.fechaCreacion | formatMediumDatetime }}</td>
+              <td>{{ grupoInstrumental.usuarioCreacion }}</td>
+              <td>{{ grupoInstrumental.fechaModificacion | formatMediumDatetime }}</td>
+              <td>{{ grupoInstrumental.usuarioModificacion }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/grupo-instrumental', grupoInstrumental.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/grupo-instrumental', grupoInstrumental.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(grupoInstrumental)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

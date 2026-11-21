@@ -2,49 +2,296 @@
 
 @using BlazorApp1.Components.Models
 @using BlazorApp1.Components.Shared
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject CalibracionService CalibracionService
+@inject ActivoService ActivoService
+@inject LaboratorioCalibracionService LaboratorioService
+@inject SessionService Session
 
-<h1>Editar calibración</h1>
 
-<CalibracionForm Model="calibracion" />
+<div class="ci-page-header">
+    <div>
+        <h1>Editar calibración</h1>
 
-<div class="ci-footer-actions">
-    <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
-        Cancelar
-    </button>
-
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar cambios
-    </button>
+        <p>
+            Modifica los datos de la calibración.
+        </p>
+    </div>
 </div>
 
+
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando calibración...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <CalibracionForm Model="calibracion"
+                     Activos="activos"
+                     Laboratorios="laboratorios" />
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Cancelar"
+                disabled="@guardando">
+
+            Cancelar
+
+        </button>
+
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Guardar"
+                disabled="@guardando">
+
+            @if (guardando)
+            {
+                <span>Guardando...</span>
+            }
+            else
+            {
+                <span>Guardar cambios</span>
+            }
+
+        </button>
+
+    </div>
+}
+
+
 @code {
+
     [Parameter]
     public long Id { get; set; }
 
-    private CalibracionUi calibracion = new()
+
+    private CalibracionUi calibracion = new();
+
+    private List<ActivoUi> activos = new();
+
+    private List<LaboratorioCalibracionUi>
+        laboratorios = new();
+
+
+    private bool cargando = true;
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
     {
-        Id = 1,
-        ActivoCodigo = "MED-M-26",
-        LaboratorioNombre = "METROIL",
-
-        FechaEnvio = new DateTime(2026, 5, 10),
-        FechaCalibracion = new DateTime(2026, 5, 15),
-        FechaRetorno = new DateTime(2026, 5, 19),
-        FechaVencimiento = new DateTime(2027, 5, 15),
-
-        NumeroCertificado = "CAL-026-2026",
-        Resultado = "CONFORME"
-    };
-
-    private void Guardar()
-    {
+        await CargarDatos();
     }
+
+
+    private async Task CargarDatos()
+    {
+        try
+        {
+            cargando = true;
+
+            activos =
+                await ActivoService.ListarAsync();
+
+            laboratorios =
+                await LaboratorioService.ListarAsync();
+
+
+            var encontrada =
+                await CalibracionService.ObtenerAsync(Id);
+
+
+            if (encontrada is null)
+            {
+                error =
+                    "No se encontró la calibración.";
+
+                return;
+            }
+
+
+            calibracion = encontrada;
+
+
+            calibracion.ActivoId =
+                calibracion.Activo?.Id ?? 0;
+
+
+            calibracion.ActivoCodigo =
+                calibracion.Activo?.Codigo ?? "";
+
+
+            var laboratorio =
+                calibracion.Laboratorio
+                ?? calibracion.LaboratorioCalibracion;
+
+
+            calibracion.LaboratorioId =
+                laboratorio?.Id ?? 0;
+
+
+            calibracion.LaboratorioNombre =
+                laboratorio?.Nombre ?? "";
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al cargar la calibración. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private async Task Guardar()
+    {
+        error = "";
+
+
+        if (calibracion.ActivoId <= 0)
+        {
+            error =
+                "Debe seleccionar un instrumento.";
+
+            return;
+        }
+
+
+        if (calibracion.LaboratorioId <= 0)
+        {
+            error =
+                "Debe seleccionar un laboratorio.";
+
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(
+                calibracion.Resultado))
+        {
+            error =
+                "Debe seleccionar un resultado.";
+
+            return;
+        }
+
+
+        try
+        {
+            guardando = true;
+
+
+            var request =
+                new CalibracionRequest
+                {
+                    Id = Id,
+
+                    FechaEnvio =
+                        calibracion.FechaEnvio,
+
+                    FechaCalibracion =
+                        calibracion.FechaCalibracion,
+
+                    FechaRetorno =
+                        calibracion.FechaRetorno,
+
+                    FechaVencimiento =
+                        calibracion.FechaVencimiento,
+
+                    NumeroCertificado =
+                        calibracion.NumeroCertificado,
+
+                    Resultado =
+                        calibracion.Resultado,
+
+                    Observaciones =
+                        calibracion.Observaciones,
+
+
+                    Activo =
+                        new ReferenciaEntidad
+                        {
+                            Id =
+                                calibracion.ActivoId
+                        },
+
+
+                    Laboratorio =
+                        new ReferenciaEntidad
+                        {
+                            Id =
+                                calibracion.LaboratorioId
+                        },
+
+
+                    FechaCreacion =
+                        calibracion.FechaCreacion,
+
+                    UsuarioCreacion =
+                        calibracion.UsuarioCreacion,
+
+
+                    FechaModificacion =
+                        DateTimeOffset.UtcNow,
+
+                    UsuarioModificacion =
+                        Session.Username
+                };
+
+
+            var actualizada =
+                await CalibracionService
+                    .ActualizarAsync(
+                        Id,
+                        request
+                    );
+
+
+            if (actualizada is null)
+            {
+                error =
+                    "No se pudieron guardar los cambios.";
+
+                return;
+            }
+
+
+            Navigation.NavigateTo(
+                "/calibraciones"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar los cambios. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/calibraciones");
+        Navigation.NavigateTo(
+            "/calibraciones"
+        );
     }
 }

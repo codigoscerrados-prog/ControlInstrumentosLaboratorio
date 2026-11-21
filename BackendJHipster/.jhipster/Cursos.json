@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "changelogDate": "20260929010358"
+  },
+  "applications": ["*"],
+  "fields": [
+    {
+      "fieldName": "curso",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "usuarioCreacion",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fechaCreacion",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "usuairoModificacion",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fechaModificacion",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "Cursos",
+  "relationships": [],
+  "searchEngine": "no"
+}

@@ -1,50 +1,187 @@
 ﻿@page "/grupos/nuevo"
 
 @using BlazorApp1.Components.Models
-@inject NavigationManager Navigation
+@using BlazorApp1.Services
 
-<h1>Nuevo grupo instrumental</h1>
+@inject NavigationManager Navigation
+@inject GrupoInstrumentalService GrupoService
+@inject SessionService Session
+
+
+<div class="ci-page-header">
+    <div>
+        <h1>Nuevo grupo instrumental</h1>
+        <p>Registra un nuevo grupo.</p>
+    </div>
+</div>
+
 
 <div class="ci-card ci-form-grid">
+
     <div>
         <label>Código</label>
-        <input class="ci-input" @bind="grupo.Codigo" />
+
+        <input class="ci-input"
+               @bind="grupo.Codigo" />
     </div>
 
     <div>
         <label>Nombre</label>
-        <input class="ci-input" @bind="grupo.Nombre" />
+
+        <input class="ci-input"
+               @bind="grupo.Nombre" />
     </div>
 
     <div class="ci-form-full">
+
         <label>Descripción</label>
+
         <textarea class="ci-input ci-textarea"
                   @bind="grupo.Descripcion">
         </textarea>
+
     </div>
+
 </div>
 
+
 <div class="ci-footer-actions">
+
     <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
+            @onclick="Cancelar"
+            disabled="@guardando">
+
         Cancelar
+
     </button>
 
     <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar
+            @onclick="Guardar"
+            disabled="@guardando">
+
+        @if (guardando)
+        {
+            <span>Guardando...</span>
+        }
+        else
+        {
+            <span>Guardar</span>
+        }
+
     </button>
+
 </div>
 
-@code {
-    private GrupoInstrumentalUi grupo = new();
 
-    private void Guardar()
+@if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+
+
+@code {
+
+    private GrupoInstrumentalUi grupo =
+        new();
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    private async Task Guardar()
     {
+        error = "";
+
+
+        if (string.IsNullOrWhiteSpace(
+                grupo.Codigo))
+        {
+            error =
+                "Debe ingresar el código.";
+
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(
+                grupo.Nombre))
+        {
+            error =
+                "Debe ingresar el nombre.";
+
+            return;
+        }
+
+
+        try
+        {
+            guardando = true;
+
+
+            var request =
+                new GrupoInstrumentalRequest
+                {
+                    Codigo =
+                        grupo.Codigo,
+
+                    Nombre =
+                        grupo.Nombre,
+
+                    Descripcion =
+                        grupo.Descripcion,
+
+                    FechaCreacion =
+                        DateTimeOffset.UtcNow,
+
+                    UsuarioCreacion =
+                        Session.Username,
+
+                    FechaModificacion =
+                        null,
+
+                    UsuarioModificacion =
+                        null
+                };
+
+
+            var creado =
+                await GrupoService
+                    .CrearAsync(request);
+
+
+            if (creado is null)
+            {
+                error =
+                    "No se pudo registrar el grupo.";
+
+                return;
+            }
+
+
+            Navigation.NavigateTo(
+                "/grupos"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar el grupo. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
     }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/grupos");
+        Navigation.NavigateTo(
+            "/grupos"
+        );
     }
 }

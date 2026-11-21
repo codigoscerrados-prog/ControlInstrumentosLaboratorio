@@ -12,10 +12,36 @@ public class SessionService
 
     public string Username { get; private set; } = "";
 
+    public string Rol { get; private set; } = "";
+
     public bool IsAuthenticated =>
-        !string.IsNullOrWhiteSpace(Token);
+        !string.IsNullOrWhiteSpace(Token)
+        &&
+        !string.IsNullOrWhiteSpace(Rol);
+
+    public bool EsAdmin =>
+        Rol.Equals(
+            "ADMIN",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    public bool EsTecnico =>
+        Rol.Equals(
+            "TECNICO",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    public bool EsConsulta =>
+        Rol.Equals(
+            "CONSULTA",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    public bool PuedeEditar =>
+        EsAdmin || EsTecnico;
 
     public bool IsInitialized { get; private set; }
+
 
     public SessionService(
         ProtectedSessionStorage sessionStorage)
@@ -23,18 +49,22 @@ public class SessionService
         _sessionStorage = sessionStorage;
     }
 
+
     public async Task IniciarSesionAsync(
         string token,
-        string username)
+        string username,
+        string rol)
     {
         Token = token;
         Username = username;
+        Rol = rol;
         IsInitialized = true;
 
         var datos = new DatosSesion
         {
             Token = token,
-            Username = username
+            Username = username,
+            Rol = rol
         };
 
         await _sessionStorage.SetAsync(
@@ -42,6 +72,7 @@ public class SessionService
             datos
         );
     }
+
 
     public async Task RestaurarSesionAsync()
     {
@@ -63,14 +94,21 @@ public class SessionService
                 !string.IsNullOrWhiteSpace(
                     session.Value.Token))
             {
-                Token = session.Value.Token;
-                Username = session.Value.Username;
+                Token =
+                    session.Value.Token;
+
+                Username =
+                    session.Value.Username;
+
+                Rol =
+                    session.Value.Rol;
             }
         }
         catch
         {
             Token = "";
             Username = "";
+            Rol = "";
         }
         finally
         {
@@ -78,10 +116,12 @@ public class SessionService
         }
     }
 
+
     public async Task CerrarSesionAsync()
     {
         Token = "";
         Username = "";
+        Rol = "";
         IsInitialized = true;
 
         await _sessionStorage.DeleteAsync(
@@ -90,9 +130,12 @@ public class SessionService
     }
 }
 
+
 public class DatosSesion
 {
     public string Token { get; set; } = "";
 
     public string Username { get; set; } = "";
+
+    public string Rol { get; set; } = "";
 }

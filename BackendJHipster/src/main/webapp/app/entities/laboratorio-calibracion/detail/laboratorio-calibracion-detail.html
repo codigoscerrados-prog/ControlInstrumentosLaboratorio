@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (laboratorioCalibracion(); as laboratorioCalibracionRef) {
+      <div>
+        <h2 data-cy="laboratorioCalibracionDetailsHeading">
+          <span jhiTranslate="ejemplo01App.laboratorioCalibracion.detail.title">Laboratorio Calibracion</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.nombre">Nombre</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.nombre }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.ruc">Ruc</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.ruc }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.direccion">Direccion</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.direccion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.telefono">Telefono</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.telefono }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.correo">Correo</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.correo }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.estado">Estado</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.estado }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.laboratorioCalibracion.usuarioModificacion">Usuario Modificacion</span></dt>
+          <dd>
+            <span>{{ laboratorioCalibracionRef.usuarioModificacion }}</span>
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/laboratorio-calibracion', laboratorioCalibracionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

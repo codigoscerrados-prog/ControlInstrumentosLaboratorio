@@ -1,0 +1,43 @@
+{
+  "annotations": {
+    "changelogDate": "20260929010357"
+  },
+  "applications": ["*"],
+  "fields": [
+    {
+      "fieldName": "codigoAlumno",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "apellidoP",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "apellidoM",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nombre",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "usuarioCreacion",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fechaCreacion",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "usuairoModificacion",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fechaModificacion",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "Alumno",
+  "relationships": [],
+  "searchEngine": "no"
+}

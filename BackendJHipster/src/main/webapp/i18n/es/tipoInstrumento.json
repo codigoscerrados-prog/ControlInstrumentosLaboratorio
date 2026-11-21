@@ -1,0 +1,29 @@
+{
+  "ejemplo01App": {
+    "tipoInstrumento": {
+      "home": {
+        "title": "Tipo Instrumentos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Tipo Instrumento",
+        "createOrEditLabel": "Crear o editar Tipo Instrumento",
+        "notFound": "Ningún Tipo Instrumentos encontrado"
+      },
+      "created": "Un nuevo Tipo Instrumento ha sido creado con el identificador {{ param }}",
+      "updated": "Un Tipo Instrumento ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Tipo Instrumento ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Tipo Instrumento {{ id }}?"
+      },
+      "detail": {
+        "title": "Tipo Instrumento"
+      },
+      "id": "ID",
+      "nombre": "Nombre",
+      "descripcion": "Descripcion",
+      "fechaCreacion": "Fecha Creacion",
+      "usuarioCreacion": "Usuario Creacion",
+      "fechaModificacion": "Fecha Modificacion",
+      "usuarioModificacion": "Usuario Modificacion"
+    }
+  }
+}

@@ -1,0 +1,102 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (activo(); as activoRef) {
+      <div>
+        <h2 data-cy="activoDetailsHeading"><span jhiTranslate="ejemplo01App.activo.detail.title">Activo</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ activoRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.codigo">Codigo</span></dt>
+          <dd>
+            <span>{{ activoRef.codigo }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.nombre">Nombre</span></dt>
+          <dd>
+            <span>{{ activoRef.nombre }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.marca">Marca</span></dt>
+          <dd>
+            <span>{{ activoRef.marca }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.modelo">Modelo</span></dt>
+          <dd>
+            <span>{{ activoRef.modelo }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.numeroSerie">Numero Serie</span></dt>
+          <dd>
+            <span>{{ activoRef.numeroSerie }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.rango">Rango</span></dt>
+          <dd>
+            <span>{{ activoRef.rango }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.resolucion">Resolucion</span></dt>
+          <dd>
+            <span>{{ activoRef.resolucion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.ubicacion">Ubicacion</span></dt>
+          <dd>
+            <span>{{ activoRef.ubicacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.estado">Estado</span></dt>
+          <dd>
+            <span>{{ activoRef.estado }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.observaciones">Observaciones</span></dt>
+          <dd>
+            <span>{{ activoRef.observaciones }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ activoRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ activoRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ activoRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.usuarioModificacion">Usuario Modificacion</span></dt>
+          <dd>
+            <span>{{ activoRef.usuarioModificacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.grupo">Grupo</span></dt>
+          <dd>
+            @if (activo()!.grupo) {
+              <div>
+                <a [routerLink]="['/grupo-instrumental', activo()!.grupo?.id, 'view']">{{ activoRef.grupo?.nombre }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.activo.tipoInstrumento">Tipo Instrumento</span></dt>
+          <dd>
+            @if (activo()!.tipoInstrumento) {
+              <div>
+                <a [routerLink]="['/tipo-instrumento', activo()!.tipoInstrumento?.id, 'view']">{{ activoRef.tipoInstrumento?.nombre }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/activo', activoRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

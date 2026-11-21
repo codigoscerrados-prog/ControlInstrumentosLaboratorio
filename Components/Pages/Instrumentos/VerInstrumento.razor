@@ -6,7 +6,7 @@
 
 @inject NavigationManager Navigation
 @inject ActivoService ActivoService
-
+@inject CalibracionService CalibracionService
 
 @if (cargando)
 {
@@ -131,11 +131,81 @@ else
 
         </div>
 
-        <p class="text-muted">
-            El historial de calibraciones será
-            cargado desde la base de datos en
-            el siguiente módulo.
-        </p>
+        @if (!calibraciones.Any())
+        {
+            <p class="text-muted">
+                Este instrumento todavía no tiene
+                calibraciones registradas.
+            </p>
+        }
+        else
+        {
+            <div class="ci-table-wrap">
+
+                <table class="ci-table">
+
+                    <thead>
+                        <tr>
+                            <th>Laboratorio</th>
+                            <th>Fecha calibración</th>
+                            <th>Vencimiento</th>
+                            <th>Certificado</th>
+                            <th>Resultado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var calibracion in calibraciones)
+                        {
+                            <tr>
+
+                                <td>
+                                    @ObtenerLaboratorio(calibracion)
+                                </td>
+
+                                <td>
+                                    @Fecha(
+                                        calibracion.FechaCalibracion
+                                    )
+                                </td>
+
+                                <td>
+                                    @Fecha(
+                                        calibracion.FechaVencimiento
+                                    )
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(
+                                        calibracion.NumeroCertificado)
+                                        ? "-"
+                                        : calibracion.NumeroCertificado)
+                                </td>
+
+                                <td>
+                                    @calibracion.Resultado
+                                </td>
+
+                                <td>
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => EditarCalibracion(calibracion.Id)">
+
+                                        Editar
+
+                                    </button>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
 
     </div>
 
@@ -169,6 +239,8 @@ else
     private ActivoUi instrumento =
         new();
 
+    private List<CalibracionUi> calibraciones =
+    new();
 
     private bool cargando = true;
 
@@ -194,6 +266,10 @@ else
             }
 
             instrumento = encontrado;
+
+            calibraciones =
+                await CalibracionService
+                    .ListarPorActivoAsync(Id);
         }
         catch (Exception ex)
         {
@@ -207,6 +283,30 @@ else
         }
     }
 
+    private static string ObtenerLaboratorio(
+    CalibracionUi calibracion)
+    {
+        return calibracion.Laboratorio?.Nombre
+               ?? calibracion
+                   .LaboratorioCalibracion?.Nombre
+               ?? "-";
+    }
+
+    private static string Fecha(
+    DateTime? fecha)
+    {
+        return fecha?.ToString(
+            "dd/MM/yyyy"
+        ) ?? "-";
+    }
+
+    private void EditarCalibracion(
+    long id)
+    {
+        Navigation.NavigateTo(
+            $"/calibraciones/editar/{id}"
+        );
+    }
 
     private void Volver()
     {

@@ -1,54 +1,227 @@
 ﻿@page "/tipos-instrumento/editar/{Id:long}"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject TipoInstrumentoService TipoService
+@inject SessionService Session
 
-<h1>Editar tipo de instrumento</h1>
 
-<div class="ci-card ci-form-grid">
+<div class="ci-page-header">
     <div>
-        <label>Nombre</label>
-        <input class="ci-input"
-               @bind="tipo.Nombre" />
-    </div>
-
-    <div class="ci-form-full">
-        <label>Descripción</label>
-        <textarea class="ci-input ci-textarea"
-                  @bind="tipo.Descripcion">
-        </textarea>
+        <h1>Editar tipo de instrumento</h1>
+        <p>Modifica los datos del tipo.</p>
     </div>
 </div>
 
-<div class="ci-footer-actions">
-    <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
-        Cancelar
-    </button>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar cambios
-    </button>
-</div>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando tipo...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card ci-form-grid">
+
+        <div>
+            <label>Nombre</label>
+
+            <input class="ci-input"
+                   @bind="tipo.Nombre" />
+        </div>
+
+        <div class="ci-form-full">
+
+            <label>Descripción</label>
+
+            <textarea class="ci-input ci-textarea"
+                      @bind="tipo.Descripcion">
+            </textarea>
+
+        </div>
+
+    </div>
+
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Cancelar"
+                disabled="@guardando">
+
+            Cancelar
+
+        </button>
+
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Guardar"
+                disabled="@guardando">
+
+            @if (guardando)
+            {
+                <span>Guardando...</span>
+            }
+            else
+            {
+                <span>Guardar cambios</span>
+            }
+
+        </button>
+
+    </div>
+}
+
 
 @code {
+
     [Parameter]
     public long Id { get; set; }
 
-    private TipoInstrumentoUi tipo = new()
-    {
-        Id = 1,
-        Nombre = "Manómetro",
-        Descripcion = "Medición de presión"
-    };
 
-    private void Guardar()
+    private TipoInstrumentoUi tipo =
+        new();
+
+    private bool cargando = true;
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
     {
+        await CargarTipo();
     }
+
+
+    private async Task CargarTipo()
+    {
+        try
+        {
+            cargando = true;
+
+
+            var encontrado =
+                await TipoService
+                    .ObtenerAsync(Id);
+
+
+            if (encontrado is null)
+            {
+                error =
+                    "No se encontró el tipo.";
+
+                return;
+            }
+
+
+            tipo = encontrado;
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al cargar el tipo. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private async Task Guardar()
+    {
+        error = "";
+
+
+        if (string.IsNullOrWhiteSpace(
+                tipo.Nombre))
+        {
+            error =
+                "Debe ingresar el nombre.";
+
+            return;
+        }
+
+
+        try
+        {
+            guardando = true;
+
+
+            var request =
+                new TipoInstrumentoRequest
+                {
+                    Id = Id,
+
+                    Nombre =
+                        tipo.Nombre,
+
+                    Descripcion =
+                        tipo.Descripcion,
+
+                    FechaCreacion =
+                        tipo.FechaCreacion,
+
+                    UsuarioCreacion =
+                        tipo.UsuarioCreacion,
+
+                    FechaModificacion =
+                        DateTimeOffset.UtcNow,
+
+                    UsuarioModificacion =
+                        Session.Username
+                };
+
+
+            var actualizado =
+                await TipoService
+                    .ActualizarAsync(
+                        Id,
+                        request
+                    );
+
+
+            if (actualizado is null)
+            {
+                error =
+                    "No se pudieron guardar los cambios.";
+
+                return;
+            }
+
+
+            Navigation.NavigateTo(
+                "/tipos-instrumento"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar los cambios. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/tipos-instrumento");
+        Navigation.NavigateTo(
+            "/tipos-instrumento"
+        );
     }
 }

@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (alumno(); as alumnoRef) {
+      <div>
+        <h2 data-cy="alumnoDetailsHeading"><span jhiTranslate="ejemplo01App.alumno.detail.title">Alumno</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ alumnoRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.codigoAlumno">Codigo Alumno</span></dt>
+          <dd>
+            <span>{{ alumnoRef.codigoAlumno }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.apellidoP">Apellido P</span></dt>
+          <dd>
+            <span>{{ alumnoRef.apellidoP }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.apellidoM">Apellido M</span></dt>
+          <dd>
+            <span>{{ alumnoRef.apellidoM }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.nombre">Nombre</span></dt>
+          <dd>
+            <span>{{ alumnoRef.nombre }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ alumnoRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ alumnoRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.usuairoModificacion">Usuairo Modificacion</span></dt>
+          <dd>
+            <span>{{ alumnoRef.usuairoModificacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.alumno.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ alumnoRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/alumno', alumnoRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

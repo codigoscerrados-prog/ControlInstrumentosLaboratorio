@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (tipoInstrumento(); as tipoInstrumentoRef) {
+      <div>
+        <h2 data-cy="tipoInstrumentoDetailsHeading">
+          <span jhiTranslate="ejemplo01App.tipoInstrumento.detail.title">Tipo Instrumento</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.tipoInstrumento.nombre">Nombre</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.nombre }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.tipoInstrumento.descripcion">Descripcion</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.descripcion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.tipoInstrumento.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.tipoInstrumento.usuarioCreacion">Usuario Creacion</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.usuarioCreacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.tipoInstrumento.fechaModificacion">Fecha Modificacion</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.fechaModificacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="ejemplo01App.tipoInstrumento.usuarioModificacion">Usuario Modificacion</span></dt>
+          <dd>
+            <span>{{ tipoInstrumentoRef.usuarioModificacion }}</span>
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/tipo-instrumento', tipoInstrumentoRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
