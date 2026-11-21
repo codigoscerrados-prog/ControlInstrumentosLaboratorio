@@ -16,61 +16,70 @@
 
         <p>Gestión de instrumentos de laboratorio</p>
 
+        <form @onsubmit="Ingresar"
+              @onsubmit:preventDefault="true"
+              autocomplete="on">
 
-        <label>Usuario</label>
+            <label for="username">
+                Usuario
+            </label>
 
-        <input class="ci-input"
-               @bind="usuario"
-               autocomplete="username"
-               placeholder="Ingrese su usuario" />
-
-
-        <label>Contraseña</label>
-
-        <input class="ci-input"
-               type="password"
-               @bind="password"
-               autocomplete="current-password"
-               placeholder="Ingrese su contraseña" />
+            <input id="username"
+                   name="username"
+                   class="ci-input"
+                   type="text"
+                   @bind="usuario"
+                   autocomplete="username"
+                   placeholder="Ingrese su usuario" />
 
 
-        <label class="ci-check">
+            <label for="password">
+                Contraseña
+            </label>
 
-            <input type="checkbox"
-                   @bind="recordarme" />
+            <input id="password"
+                   name="password"
+                   class="ci-input"
+                   type="password"
+                   @bind="password"
+                   autocomplete="current-password"
+                   placeholder="Ingrese su contraseña" />
 
-            Recordarme
 
-        </label>
 
-        <div class="ci-login-links">
-            <a href="/recuperar-password">
-                ¿Olvidaste tu contraseña?
-            </a>
-        </div>
 
-        <button class="ci-btn ci-btn-primary ci-btn-full"
-                @onclick="Ingresar"
-                disabled="@procesando">
 
-            @if (procesando)
-            {
-                <span>Ingresando...</span>
-            }
-            else
-            {
-                <span>Iniciar sesión</span>
-            }
+            <div class="ci-login-links">
 
-        </button>
+                <a href="/recuperar-password">
+                    ¿Olvidaste tu contraseña?
+                </a>
+
+            </div>
+
+
+            <button type="submit"
+                    class="ci-btn ci-btn-primary ci-btn-full"
+                    disabled="@procesando">
+
+                @if (procesando)
+                {
+                    <span>Ingresando...</span>
+                }
+                else
+                {
+                    <span>Iniciar sesión</span>
+                }
+
+            </button>
+
+        </form>
 
 
         @if (!string.IsNullOrWhiteSpace(mensaje))
         {
             <div class="ci-message-error">
-
                 @mensaje
-
             </div>
         }
 
@@ -85,7 +94,6 @@
 
     private string password = "";
 
-    private bool recordarme;
 
     private string mensaje = "";
 
@@ -112,8 +120,7 @@
             var correcto =
                 await AuthService.LoginAsync(
                     usuario,
-                    password,
-                    recordarme
+                    password
                 );
 
             if (correcto)
@@ -136,6 +143,26 @@
         finally
         {
             procesando = false;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        var uri =
+            Navigation.ToAbsoluteUri(
+                Navigation.Uri
+            );
+
+        if (Microsoft.AspNetCore.WebUtilities
+            .QueryHelpers
+            .ParseQuery(uri.Query)
+            .TryGetValue(
+                "motivo",
+                out var motivo) &&
+            motivo == "inactividad")
+        {
+            mensaje =
+                "La sesión se cerró por 10 minutos de inactividad.";
         }
     }
 

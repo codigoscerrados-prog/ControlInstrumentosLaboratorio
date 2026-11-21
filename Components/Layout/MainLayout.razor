@@ -1,8 +1,10 @@
 @inherits LayoutComponentBase
+@implements IAsyncDisposable
 
 @inject BlazorApp1.Services.SessionService Session
 @inject BlazorApp1.Services.AuthService AuthService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 @if (sesionCargada && Session.IsAuthenticated)
 {
@@ -96,6 +98,7 @@ else if (!sesionCargada)
 
 @code {
     private bool sesionCargada;
+    private DotNetObjectReference<MainLayout>? dotNetReference;
 
     protected override async Task OnAfterRenderAsync(
         bool firstRender)
@@ -119,16 +122,53 @@ else if (!sesionCargada)
             return;
         }
 
+        dotNetReference =
+            DotNetObjectReference.Create(this);
+
+        await JS.InvokeVoidAsync(
+            "inactivityManager.start",
+            dotNetReference
+        );
+
         StateHasChanged();
     }
 
     private async Task CerrarSesion()
     {
+        await JS.InvokeVoidAsync(
+            "inactivityManager.stop"
+        );
+
         await AuthService.LogoutAsync();
 
         Navigation.NavigateTo(
             "/login",
             forceLoad: true
         );
+    }
+
+    [JSInvokable]
+    public async Task CerrarPorInactividad()
+    {
+        await AuthService.LogoutAsync();
+
+        Navigation.NavigateTo(
+            "/login?motivo=inactividad",
+            forceLoad: true
+        );
+    }
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync(
+                "inactivityManager.stop"
+            );
+        }
+        catch
+        {
+        }
+
+        dotNetReference?.Dispose();
     }
 }

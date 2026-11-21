@@ -7,7 +7,6 @@ public class SessionService
     private const string SessionKey = "ci_sesion";
 
     private readonly ProtectedSessionStorage _sessionStorage;
-    private readonly ProtectedLocalStorage _localStorage;
 
     public string Token { get; private set; } = "";
 
@@ -19,17 +18,14 @@ public class SessionService
     public bool IsInitialized { get; private set; }
 
     public SessionService(
-        ProtectedSessionStorage sessionStorage,
-        ProtectedLocalStorage localStorage)
+        ProtectedSessionStorage sessionStorage)
     {
         _sessionStorage = sessionStorage;
-        _localStorage = localStorage;
     }
 
     public async Task IniciarSesionAsync(
         string token,
-        string username,
-        bool recordarme)
+        string username)
     {
         Token = token;
         Username = username;
@@ -41,28 +37,10 @@ public class SessionService
             Username = username
         };
 
-        if (recordarme)
-        {
-            await _localStorage.SetAsync(
-                SessionKey,
-                datos
-            );
-
-            await _sessionStorage.DeleteAsync(
-                SessionKey
-            );
-        }
-        else
-        {
-            await _sessionStorage.SetAsync(
-                SessionKey,
-                datos
-            );
-
-            await _localStorage.DeleteAsync(
-                SessionKey
-            );
-        }
+        await _sessionStorage.SetAsync(
+            SessionKey,
+            datos
+        );
     }
 
     public async Task RestaurarSesionAsync()
@@ -74,25 +52,6 @@ public class SessionService
 
         try
         {
-            // Primero buscamos una sesión recordada.
-            var local =
-                await _localStorage
-                    .GetAsync<DatosSesion>(
-                        SessionKey
-                    );
-
-            if (local.Success &&
-                local.Value is not null &&
-                !string.IsNullOrWhiteSpace(
-                    local.Value.Token))
-            {
-                Token = local.Value.Token;
-                Username = local.Value.Username;
-                return;
-            }
-
-            // Si no existe en localStorage,
-            // revisamos sessionStorage.
             var session =
                 await _sessionStorage
                     .GetAsync<DatosSesion>(
@@ -126,10 +85,6 @@ public class SessionService
         IsInitialized = true;
 
         await _sessionStorage.DeleteAsync(
-            SessionKey
-        );
-
-        await _localStorage.DeleteAsync(
             SessionKey
         );
     }

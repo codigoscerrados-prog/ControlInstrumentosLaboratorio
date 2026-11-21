@@ -1,121 +1,116 @@
 @using BlazorApp1.Components.Models
 
 <div class="ci-card">
+
     <div class="ci-form-grid">
 
         <div>
             <label>Código</label>
+
             <input class="ci-input"
                    @bind="Model.Codigo" />
         </div>
 
+
         <div>
             <label>Nombre</label>
+
             <input class="ci-input"
                    @bind="Model.Nombre" />
         </div>
+
 
         <div>
             <label>Tipo de instrumento</label>
 
             <select class="ci-input"
-                    @bind="Model.TipoInstrumentoNombre">
+                    @bind="Model.TipoInstrumentoId">
 
-                <option value="Manómetro">
-                    Manómetro
+                <option value="0">
+                    Seleccione un tipo
                 </option>
 
-                <option value="Termómetro">
-                    Termómetro
-                </option>
-
-                <option value="Caudalímetro">
-                    Caudalímetro
-                </option>
-
-                <option value="Medidor volumétrico">
-                    Medidor volumétrico
-                </option>
-
-                <option value="Cronómetro">
-                    Cronómetro
-                </option>
-
-                <option value="Termohigrómetro">
-                    Termohigrómetro
-                </option>
+                @foreach (var tipo in Tipos)
+                {
+                    <option value="@tipo.Id">
+                        @tipo.Nombre
+                    </option>
+                }
 
             </select>
+
         </div>
+
 
         <div>
             <label>Grupo instrumental</label>
 
             <select class="ci-input"
-                    @bind="Model.GrupoNombre">
+                    @bind="Model.GrupoId">
 
-                <option value="Banco 3">
-                    Banco 3
+                <option value="0">
+                    Seleccione un grupo
                 </option>
 
-                <option value="Banco 4">
-                    Banco 4
-                </option>
-
-                <option value="Banco 5">
-                    Banco 5
-                </option>
-
-                <option value="Banco 6">
-                    Banco 6
-                </option>
-
-                <option value="Respaldo">
-                    Respaldo
-                </option>
-
-                <option value="Patrones">
-                    Patrones
-                </option>
+                @foreach (var grupo in Grupos)
+                {
+                    <option value="@grupo.Id">
+                        @grupo.Nombre
+                    </option>
+                }
 
             </select>
+
         </div>
+
 
         <div>
             <label>Marca</label>
+
             <input class="ci-input"
                    @bind="Model.Marca" />
         </div>
 
+
         <div>
             <label>Modelo</label>
+
             <input class="ci-input"
                    @bind="Model.Modelo" />
         </div>
 
+
         <div>
             <label>Número de serie</label>
+
             <input class="ci-input"
                    @bind="Model.NumeroSerie" />
         </div>
 
+
         <div>
             <label>Rango</label>
+
             <input class="ci-input"
                    @bind="Model.Rango" />
         </div>
 
+
         <div>
             <label>Resolución</label>
+
             <input class="ci-input"
                    @bind="Model.Resolucion" />
         </div>
 
+
         <div>
             <label>Ubicación</label>
+
             <input class="ci-input"
                    @bind="Model.Ubicacion" />
         </div>
+
 
         <div>
             <label>Estado</label>
@@ -144,20 +139,36 @@
                 </option>
 
             </select>
+
         </div>
 
+
         <div class="ci-form-full">
+
             <label>Observaciones</label>
 
             <textarea class="ci-input ci-textarea"
                       @bind="Model.Observaciones">
             </textarea>
+
         </div>
 
     </div>
+
 </div>
 
+
 @code {
+
     [Parameter, EditorRequired]
     public ActivoUi Model { get; set; } = new();
+
+
+    [Parameter]
+    public List<GrupoInstrumentalUi> Grupos { get; set; } = new();
+
+
+    [Parameter]
+    public List<TipoInstrumentoUi> Tipos { get; set; } = new();
+
 }

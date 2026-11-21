@@ -21,11 +21,15 @@ builder.Services.AddHttpClient(
 );
 
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddScoped<ProtectedLocalStorage>();
+
 
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<BackendClient>();
+
+builder.Services.AddScoped<ActivoService>();
+builder.Services.AddScoped<GrupoInstrumentalService>();
+builder.Services.AddScoped<TipoInstrumentoService>();
 
 var app = builder.Build();
 

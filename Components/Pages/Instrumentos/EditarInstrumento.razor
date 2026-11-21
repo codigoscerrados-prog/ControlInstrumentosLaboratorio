@@ -2,8 +2,14 @@
 
 @using BlazorApp1.Components.Models
 @using BlazorApp1.Components.Shared
+@using BlazorApp1.Services
 
 @inject NavigationManager Navigation
+@inject ActivoService ActivoService
+@inject SessionService Session
+@inject GrupoInstrumentalService GrupoService
+@inject TipoInstrumentoService TipoService
+
 
 <div class="ci-page-header">
     <div>
@@ -12,66 +18,249 @@
     </div>
 </div>
 
-<InstrumentoForm Model="instrumento" />
 
-<div class="ci-footer-actions">
-    <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
-        Cancelar
-    </button>
-
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar cambios
-    </button>
-</div>
-
-@if (guardado)
+@if (cargando)
 {
-    <div class="ci-success-box">
-        Cambios guardados en el prototipo.
+    <div class="ci-card">
+        Cargando instrumento...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <InstrumentoForm Model="instrumento"
+                     Grupos="grupos"
+                     Tipos="tipos" />
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Cancelar"
+                disabled="@guardando">
+            Cancelar
+        </button>
+
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Guardar"
+                disabled="@guardando">
+
+            @if (guardando)
+            {
+                <span>Guardando...</span>
+            }
+            else
+            {
+                <span>Guardar cambios</span>
+            }
+
+        </button>
+
     </div>
 }
 
+
 @code {
+
     [Parameter]
     public long Id { get; set; }
 
-    private bool guardado;
 
-    private ActivoUi instrumento = new()
+    private ActivoUi instrumento = new();
+
+    private List<GrupoInstrumentalUi> grupos =
+        new();
+
+    private List<TipoInstrumentoUi> tipos =
+        new();
+
+
+    private bool cargando = true;
+
+    private bool guardando;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
     {
-        Id = 1,
-        Codigo = "MED-M-26",
-        Nombre = "Manómetro digital",
+        await CargarDatos();
+    }
 
-        TipoInstrumentoId = 1,
-        TipoInstrumentoNombre = "Manómetro",
 
-        GrupoId = 1,
-        GrupoNombre = "Banco 3",
+    private async Task CargarDatos()
+    {
+        try
+        {
+            cargando = true;
 
-        Marca = "UTOP",
-        Modelo = "UIB6",
-        NumeroSerie = "190410011",
+            grupos =
+                await GrupoService.ListarAsync();
 
-        Rango = "0 - 20 bar",
-        Resolucion = "0.001 bar",
+            tipos =
+                await TipoService.ListarAsync();
 
-        Ubicacion = "Entrada Banco 3",
+            var encontrado =
+                await ActivoService.ObtenerAsync(Id);
 
-        Estado = "OPERATIVO",
+            if (encontrado is null)
+            {
+                error =
+                    "No se encontró el instrumento.";
 
-        Observaciones = "Instrumento de entrada."
+                return;
+            }
+
+            instrumento = encontrado;
+
+            instrumento.GrupoId =
+                instrumento.Grupo?.Id ?? 0;
+
+            instrumento.GrupoNombre =
+                instrumento.Grupo?.Nombre ?? "";
+
+            instrumento.TipoInstrumentoId =
+                instrumento.TipoInstrumento?.Id ?? 0;
+
+            instrumento.TipoInstrumentoNombre =
+                instrumento.TipoInstrumento?.Nombre ?? "";
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al cargar el instrumento. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private async Task Guardar()
+    {
+        error = "";
+
+        if (string.IsNullOrWhiteSpace(
+                instrumento.Codigo))
+        {
+            error =
+                "Debe ingresar el código.";
+
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                instrumento.Nombre))
+        {
+            error =
+                "Debe ingresar el nombre.";
+
+            return;
+        }
+
+        if (instrumento.TipoInstrumentoId <= 0)
+        {
+            error =
+                "Debe seleccionar el tipo.";
+
+            return;
+        }
+
+        if (instrumento.GrupoId <= 0)
+        {
+            error =
+                "Debe seleccionar el grupo.";
+
+            return;
+        }
+
+        try
+        {
+            guardando = true;
+
+            var request =
+    new ActivoRequest
+    {
+        Id = Id,
+
+        Codigo = instrumento.Codigo,
+        Nombre = instrumento.Nombre,
+        Marca = instrumento.Marca,
+        Modelo = instrumento.Modelo,
+        NumeroSerie = instrumento.NumeroSerie,
+        Rango = instrumento.Rango,
+        Resolucion = instrumento.Resolucion,
+        Ubicacion = instrumento.Ubicacion,
+        Estado = instrumento.Estado,
+        Observaciones = instrumento.Observaciones,
+
+        Grupo = new ReferenciaEntidad
+        {
+            Id = instrumento.GrupoId
+        },
+
+        TipoInstrumento =
+            new ReferenciaEntidad
+            {
+                Id =
+                    instrumento.TipoInstrumentoId
+            },
+
+        FechaCreacion =
+            instrumento.FechaCreacion,
+
+        UsuarioCreacion =
+            instrumento.UsuarioCreacion,
+
+        FechaModificacion =
+            DateTimeOffset.UtcNow,
+
+        UsuarioModificacion =
+            Session.Username
     };
 
-    private void Guardar()
-    {
-        guardado = true;
+            var actualizado =
+                await ActivoService
+                    .ActualizarAsync(
+                        Id,
+                        request
+                    );
+
+            if (actualizado is null)
+            {
+                error =
+                    "No se pudieron guardar los cambios.";
+
+                return;
+            }
+
+            Navigation.NavigateTo(
+                $"/instrumentos/ver/{Id}"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "Error al guardar los cambios. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
     }
+
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/instrumentos");
+        Navigation.NavigateTo(
+            $"/instrumentos/ver/{Id}"
+        );
     }
 }

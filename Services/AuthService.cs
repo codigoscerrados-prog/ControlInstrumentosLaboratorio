@@ -18,8 +18,7 @@ public class AuthService
 
     public async Task<bool> LoginAsync(
         string username,
-        string password,
-        bool rememberMe)
+        string password)
     {
         var client =
             _httpClientFactory.CreateClient("Backend");
@@ -28,7 +27,7 @@ public class AuthService
         {
             Username = username,
             Password = password,
-            RememberMe = rememberMe
+            RememberMe = false
         };
 
         var response =
@@ -54,8 +53,7 @@ public class AuthService
 
         await _session.IniciarSesionAsync(
             resultado.IdToken,
-            username,
-            rememberMe
+            username
         );
 
         return true;
