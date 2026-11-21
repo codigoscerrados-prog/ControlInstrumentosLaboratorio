@@ -98,6 +98,46 @@ label {
     margin: 10px 0;
 }
 
+.ci-nav .ci-logout-link {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border: 0 !important;
+    outline: 0;
+    border-radius: 8px;
+    background: transparent !important;
+    color: #d0d5dd;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    line-height: normal;
+    text-align: left;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+    .ci-nav .ci-logout-link:hover {
+        background: #1d2939 !important;
+        color: #ffffff;
+    }
+
+    .ci-nav .ci-logout-link:focus,
+    .ci-nav .ci-logout-link:active {
+        border: 0 !important;
+        outline: 0;
+        box-shadow: none !important;
+    }
+
+.ci-session-loading {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    color: #667085;
+    background: #f5f7fb;
+}
+
 /* =========================
    ENCABEZADOS
 ========================= */

@@ -1,19 +1,134 @@
 @inherits LayoutComponentBase
-<div class="ci-shell">
-    <aside class="ci-sidebar">
-        <div class="ci-brand"><div class="ci-brand-icon">⚗</div><div><strong>Control de Instrumentos</strong><small>Laboratorio</small></div></div>
-        <nav class="ci-nav">
-            <NavLink href="/dashboard">Dashboard</NavLink>
-            <NavLink href="/instrumentos" Match="NavLinkMatch.Prefix">Instrumentos</NavLink>
-            <NavLink href="/calibraciones" Match="NavLinkMatch.Prefix">Calibraciones</NavLink>
-            <NavLink href="/laboratorios" Match="NavLinkMatch.Prefix">Laboratorios</NavLink>
-            <NavLink href="/grupos" Match="NavLinkMatch.Prefix">Grupos</NavLink>
-            <NavLink href="/tipos-instrumento" Match="NavLinkMatch.Prefix">Tipos de instrumento</NavLink>
-            <NavLink href="/usuarios" Match="NavLinkMatch.Prefix">Usuarios</NavLink>
-            <NavLink href="/roles" Match="NavLinkMatch.Prefix">Roles</NavLink>
-            <div class="ci-nav-separator"></div>
-            <NavLink href="/login">Cerrar sesión</NavLink>
-        </nav>
-    </aside>
-    <main class="ci-main">@Body</main>
-</div>
+
+@inject BlazorApp1.Services.SessionService Session
+@inject BlazorApp1.Services.AuthService AuthService
+@inject NavigationManager Navigation
+
+@if (sesionCargada && Session.IsAuthenticated)
+{
+    <div class="ci-shell">
+
+        <aside class="ci-sidebar">
+
+            <div class="ci-brand">
+
+                <div class="ci-brand-icon">
+                    ⚗
+                </div>
+
+                <div>
+                    <strong>
+                        Control de Instrumentos
+                    </strong>
+
+                    <small>
+                        Laboratorio
+                    </small>
+                </div>
+
+            </div>
+
+            <nav class="ci-nav">
+
+                <NavLink href="/dashboard">
+                    Dashboard
+                </NavLink>
+
+                <NavLink href="/instrumentos"
+                         Match="NavLinkMatch.Prefix">
+                    Instrumentos
+                </NavLink>
+
+                <NavLink href="/calibraciones"
+                         Match="NavLinkMatch.Prefix">
+                    Calibraciones
+                </NavLink>
+
+                <NavLink href="/laboratorios"
+                         Match="NavLinkMatch.Prefix">
+                    Laboratorios
+                </NavLink>
+
+                <NavLink href="/grupos"
+                         Match="NavLinkMatch.Prefix">
+                    Grupos
+                </NavLink>
+
+                <NavLink href="/tipos-instrumento"
+                         Match="NavLinkMatch.Prefix">
+                    Tipos de instrumento
+                </NavLink>
+
+                <NavLink href="/usuarios"
+                         Match="NavLinkMatch.Prefix">
+                    Usuarios
+                </NavLink>
+
+                <NavLink href="/roles"
+                         Match="NavLinkMatch.Prefix">
+                    Roles
+                </NavLink>
+
+                <div class="ci-nav-separator"></div>
+
+                <button type="button"
+                        class="ci-logout-link"
+                        @onclick="CerrarSesion">
+                    Cerrar sesión
+                </button>
+
+            </nav>
+
+        </aside>
+
+        <main class="ci-main">
+            @Body
+        </main>
+
+    </div>
+}
+else if (!sesionCargada)
+{
+    <div class="ci-session-loading">
+        Cargando...
+    </div>
+}
+
+@code {
+    private bool sesionCargada;
+
+    protected override async Task OnAfterRenderAsync(
+        bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await Session.RestaurarSesionAsync();
+
+        sesionCargada = true;
+
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo(
+                "/login",
+                forceLoad: true
+            );
+
+            return;
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task CerrarSesion()
+    {
+        await AuthService.LogoutAsync();
+
+        Navigation.NavigateTo(
+            "/login",
+            forceLoad: true
+        );
+    }
+}

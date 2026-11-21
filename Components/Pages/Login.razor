@@ -4,6 +4,7 @@
 @layout BlazorApp1.Components.Layout.EmptyLayout
 
 @inject NavigationManager Navigation
+@inject BlazorApp1.Services.AuthService AuthService
 
 <div class="ci-login-page">
 
@@ -20,6 +21,7 @@
 
         <input class="ci-input"
                @bind="usuario"
+               autocomplete="username"
                placeholder="Ingrese su usuario" />
 
 
@@ -28,6 +30,7 @@
         <input class="ci-input"
                type="password"
                @bind="password"
+               autocomplete="current-password"
                placeholder="Ingrese su contraseña" />
 
 
@@ -47,9 +50,17 @@
         </div>
 
         <button class="ci-btn ci-btn-primary ci-btn-full"
-                @onclick="Ingresar">
+                @onclick="Ingresar"
+                disabled="@procesando">
 
-            Iniciar sesión
+            @if (procesando)
+            {
+                <span>Ingresando...</span>
+            }
+            else
+            {
+                <span>Iniciar sesión</span>
+            }
 
         </button>
 
@@ -62,13 +73,6 @@
 
             </div>
         }
-
-
-        <small class="ci-demo-note">
-
-            Usuario: admin / Contraseña: admin
-
-        </small>
 
     </div>
 
@@ -86,19 +90,52 @@
     private string mensaje = "";
 
 
-    private void Ingresar()
-    {
-        if (usuario == "admin" &&
-            password == "admin")
-        {
-            mensaje = "";
+    private bool procesando;
 
-            Navigation.NavigateTo("/dashboard");
-        }
-        else
+    private async Task Ingresar()
+    {
+        mensaje = "";
+
+        if (string.IsNullOrWhiteSpace(usuario) ||
+            string.IsNullOrWhiteSpace(password))
         {
             mensaje =
-                "Usuario o contraseña incorrectos.";
+                "Ingrese usuario y contraseña.";
+
+            return;
+        }
+
+        try
+        {
+            procesando = true;
+
+            var correcto =
+                await AuthService.LoginAsync(
+                    usuario,
+                    password,
+                    recordarme
+                );
+
+            if (correcto)
+            {
+                Navigation.NavigateTo(
+                    "/dashboard"
+                );
+            }
+            else
+            {
+                mensaje =
+                    "Usuario o contraseña incorrectos.";
+            }
+        }
+        catch
+        {
+            mensaje =
+                "No se pudo conectar con el servidor.";
+        }
+        finally
+        {
+            procesando = false;
         }
     }
 
