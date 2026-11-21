@@ -19,6 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
+import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.security.SecurityUtils;
+import com.mycompany.myapp.service.UsuarioRegistroService;
+import com.mycompany.myapp.service.dto.RegistroUsuarioDTO;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.Usuario}.
@@ -37,10 +42,19 @@ public class UsuarioResource {
 
     private final UsuarioRepository usuarioRepository;
 
-    public UsuarioResource(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
-    }
+    private final UsuarioRegistroService usuarioRegistroService;
 
+    public UsuarioResource(
+    UsuarioRepository usuarioRepository,
+    UsuarioRegistroService usuarioRegistroService
+) {
+    this.usuarioRepository =
+        usuarioRepository;
+
+    this.usuarioRegistroService =
+        usuarioRegistroService;
+}
+    
     /**
      * {@code POST  /usuarios} : Create a new usuario.
      *
@@ -49,6 +63,7 @@ public class UsuarioResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Usuario> createUsuario(@Valid @RequestBody Usuario usuario) throws URISyntaxException {
         LOG.debug("REST request to save Usuario : {}", usuario);
         if (usuario.getId() != null) {
@@ -71,6 +86,7 @@ public class UsuarioResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Usuario> updateUsuario(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody Usuario usuario
@@ -105,6 +121,7 @@ public class UsuarioResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Usuario> partialUpdateUsuario(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Usuario usuario
@@ -143,6 +160,39 @@ public class UsuarioResource {
         );
     }
 
+    @PostMapping("/registrar")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+public ResponseEntity<Usuario> registrarUsuario(
+    @Valid @RequestBody RegistroUsuarioDTO dto
+) throws URISyntaxException {
+
+    LOG.debug(
+        "REST request to registrar Usuario : {}",
+        dto.getUsername()
+    );
+
+    Usuario usuario =
+        usuarioRegistroService
+            .registrar(dto);
+
+    return ResponseEntity
+        .created(
+            new URI(
+                "/api/usuarios/" +
+                usuario.getId()
+            )
+        )
+        .headers(
+            HeaderUtil.createEntityCreationAlert(
+                applicationName,
+                true,
+                ENTITY_NAME,
+                usuario.getId().toString()
+            )
+        )
+        .body(usuario);
+}
+
     /**
      * {@code GET  /usuarios} : get all the Usuarios.
      *
@@ -150,6 +200,7 @@ public class UsuarioResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Usuarios in body.
      */
     @GetMapping("")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Usuario> getAllUsuarios(@RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload) {
         LOG.debug("REST request to get all Usuarios");
         if (eagerload) {
@@ -166,6 +217,7 @@ public class UsuarioResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the usuario, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Usuario> getUsuario(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Usuario : {}", id);
         Optional<Usuario> usuario = usuarioRepository.findOneWithEagerRelationships(id);
@@ -179,6 +231,7 @@ public class UsuarioResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUsuario(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Usuario : {}", id);
         usuarioRepository.deleteById(id);
@@ -192,4 +245,30 @@ public class UsuarioResource {
             setter.accept(value);
         }
     }
+
+    @GetMapping("/actual")
+public ResponseEntity<Usuario> getUsuarioActual() {
+
+    String login =
+        SecurityUtils
+            .getCurrentUserLogin()
+            .orElse(null);
+
+    if (login == null) {
+        return ResponseEntity
+            .notFound()
+            .build();
+    }
+
+    Optional<Usuario> usuario =
+        usuarioRepository
+            .findOneByUsernameIgnoreCase(
+                login
+            );
+
+    return ResponseUtil
+        .wrapOrNotFound(
+            usuario
+        );
+}
 }

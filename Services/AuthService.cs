@@ -83,22 +83,11 @@ public class AuthService
             );
 
 
-        var usuarios =
-            await client
-                .GetFromJsonAsync<List<UsuarioUi>>(
-                    "api/usuarios?size=100"
-                );
-
-
         var usuarioSistema =
-            usuarios?
-                .FirstOrDefault(
-                    x =>
-                        x.Username.Equals(
-                            username,
-                            StringComparison.OrdinalIgnoreCase
-                        )
-                );
+            await client
+                .GetFromJsonAsync<UsuarioUi>(
+                    "api/usuarios/actual"
+                 );
 
 
         // El usuario puede existir en JHI_USER,

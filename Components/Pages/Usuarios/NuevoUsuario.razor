@@ -1,71 +1,235 @@
 ﻿@page "/usuarios/nuevo"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject UsuarioService UsuarioService
+@inject SessionService Session
 
-<h1>Nuevo usuario</h1>
-
-<div class="ci-card ci-form-grid">
+<div class="ci-page-header">
     <div>
-        <label>Usuario</label>
-        <input class="ci-input"
-               @bind="usuario.Username" />
-    </div>
-
-    <div>
-        <label>Contraseña</label>
-        <input class="ci-input"
-               type="password"
-               @bind="usuario.Password" />
-    </div>
-
-    <div>
-        <label>Rol</label>
-
-        <select class="ci-input"
-                @bind="usuario.RolNombre">
-            <option value="ADMIN">ADMIN</option>
-            <option value="TECNICO">TECNICO</option>
-            <option value="CONSULTA">CONSULTA</option>
-        </select>
-    </div>
-
-    <div>
-        <label>Estado</label>
-
-        <select class="ci-input"
-                @bind="usuario.Estado">
-            <option value="ACTIVO">ACTIVO</option>
-            <option value="INACTIVO">INACTIVO</option>
-        </select>
+        <h1>Nuevo usuario</h1>
+        <p>Registra una nueva cuenta de acceso al sistema.</p>
     </div>
 </div>
 
-<div class="ci-footer-actions">
-    <button class="ci-btn ci-btn-light"
-            @onclick="Cancelar">
-        Cancelar
-    </button>
+@if (!Session.EsAdmin)
+{
+    <div class="ci-message-error">
+        No tiene permisos para acceder a esta sección.
+    </div>
+}
+else
+{
+    <div class="ci-card ci-form-grid">
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Guardar">
-        Guardar
-    </button>
-</div>
+        <div>
+            <label>Usuario</label>
+
+            <input class="ci-input"
+                   autocomplete="off"
+                   @bind="usuario.Username" />
+        </div>
+
+        <div>
+            <label>Correo</label>
+
+            <input class="ci-input"
+                   type="email"
+                   @bind="usuario.Correo" />
+        </div>
+
+        <div>
+            <label>Contraseña</label>
+
+            <input class="ci-input"
+                   type="password"
+                   autocomplete="new-password"
+                   @bind="usuario.Password" />
+        </div>
+
+        <div>
+            <label>Confirmar contraseña</label>
+
+            <input class="ci-input"
+                   type="password"
+                   autocomplete="new-password"
+                   @bind="confirmarPassword" />
+        </div>
+
+        <div>
+            <label>Rol</label>
+
+            <select class="ci-input"
+                    @bind="usuario.Rol">
+
+                <option value="TECNICO">
+                    TECNICO
+                </option>
+
+                <option value="CONSULTA">
+                    CONSULTA
+                </option>
+
+            </select>
+        </div>
+
+    </div>
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Cancelar"
+                disabled="@guardando">
+            Cancelar
+        </button>
+
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Guardar"
+                disabled="@guardando">
+
+            @(guardando
+                ? "Guardando..."
+                : "Guardar usuario")
+
+        </button>
+
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <div class="ci-message-error">
+            @error
+        </div>
+    }
+}
 
 @code {
-    private UsuarioUi usuario = new()
-    {
-        Estado = "ACTIVO",
-        RolNombre = "TECNICO"
-    };
 
-    private void Guardar()
+    private RegistroUsuarioRequest usuario =
+        new()
+        {
+            Rol = "TECNICO"
+        };
+
+    private string confirmarPassword = "";
+
+    private bool guardando;
+
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
     {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.EsAdmin)
+        {
+            Navigation.NavigateTo(
+                "/dashboard"
+            );
+        }
+    }
+
+    private async Task Guardar()
+    {
+        error = "";
+
+        usuario.Username =
+            usuario.Username.Trim();
+
+        usuario.Correo =
+            usuario.Correo.Trim();
+
+        if (string.IsNullOrWhiteSpace(
+                usuario.Username))
+        {
+            error =
+                "Debe ingresar el usuario.";
+
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                usuario.Correo))
+        {
+            error =
+                "Debe ingresar el correo.";
+
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                usuario.Password))
+        {
+            error =
+                "Debe ingresar la contraseña.";
+
+            return;
+        }
+
+        if (usuario.Password.Length < 8)
+        {
+            error =
+                "La contraseña debe tener al menos 8 caracteres.";
+
+            return;
+        }
+
+        if (usuario.Password !=
+            confirmarPassword)
+        {
+            error =
+                "Las contraseñas no coinciden.";
+
+            return;
+        }
+
+        if (usuario.Rol != "TECNICO" &&
+            usuario.Rol != "CONSULTA")
+        {
+            error =
+                "El rol seleccionado no está permitido.";
+
+            return;
+        }
+
+        try
+        {
+            guardando = true;
+
+            var creado =
+                await UsuarioService
+                    .RegistrarAsync(usuario);
+
+            if (creado is null)
+            {
+                error =
+                    "No se pudo registrar el usuario.";
+
+                return;
+            }
+
+            Navigation.NavigateTo(
+                "/usuarios"
+            );
+        }
+        catch (Exception ex)
+        {
+            error =
+                "No se pudo registrar el usuario. " +
+                ex.Message;
+        }
+        finally
+        {
+            guardando = false;
+        }
     }
 
     private void Cancelar()
     {
-        Navigation.NavigateTo("/usuarios");
+        Navigation.NavigateTo(
+            "/usuarios"
+        );
     }
 }

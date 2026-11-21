@@ -2,6 +2,7 @@ using BlazorApp1.Components;
 using BlazorApp1.Services;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
+
 var builder =
     WebApplication.CreateBuilder(args);
 
@@ -33,7 +34,7 @@ builder.Services.AddScoped<GrupoInstrumentalService>();
 builder.Services.AddScoped<TipoInstrumentoService>();
 builder.Services.AddScoped<CalibracionService>();
 builder.Services.AddScoped<LaboratorioCalibracionService>();
-
+builder.Services.AddScoped<UsuarioService>();
 
 
 var app = builder.Build();

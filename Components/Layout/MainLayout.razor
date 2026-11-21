@@ -14,17 +14,7 @@
 
             <div class="ci-brand">
 
-                <div class="ci-user-info">
-
-                    <strong>
-                        @Session.Username
-                    </strong>
-
-                    <small>
-                        @Session.Rol
-                    </small>
-
-                </div>
+                
 
                 <div>
                     <strong>
@@ -35,9 +25,10 @@
                         Laboratorio
                     </small>
                 </div>
+               
 
             </div>
-
+           
             <nav class="ci-nav">
 
                 <NavLink href="/dashboard">
@@ -91,7 +82,17 @@
                 </button>
 
             </nav>
+            <div class="ci-user-info">
 
+                <strong>
+                    @Session.Username
+                </strong>
+
+                <small>
+                    @Session.Rol
+                </small>
+
+            </div>
         </aside>
 
         <main class="ci-main">

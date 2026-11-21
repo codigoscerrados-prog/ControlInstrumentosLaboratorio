@@ -2,10 +2,15 @@
 
 @using BlazorApp1.Components.Models
 @using BlazorApp1.Components.Shared
+@using BlazorApp1.Services
 
 @inject NavigationManager Navigation
+@inject UsuarioService UsuarioService
+@inject SessionService Session
+
 
 <div class="ci-page-header">
+
     <div>
         <h1>Usuarios</h1>
         <p>Administra usuarios del sistema.</p>
@@ -15,71 +20,160 @@
             @onclick="Nuevo">
         + Nuevo usuario
     </button>
+
 </div>
 
-<div class="ci-card">
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
 
-        <tbody>
-            @foreach (var usuario in usuarios)
-            {
-                <tr>
-                    <td>@usuario.Username</td>
-                    <td>@usuario.RolNombre</td>
+@if (!Session.EsAdmin)
+{
+    <div class="ci-message-error">
+        No tiene permisos para acceder a esta sección.
+    </div>
+}
+else if (cargando)
+{
+    <div class="ci-card">
+        Cargando usuarios...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-card">
 
-                    <td>
-                        <EstadoBadge Estado="@usuario.Estado" />
-                    </td>
+        <div class="ci-table-wrap">
 
-                    <td>
-                        <button class="ci-btn ci-btn-light"
-                                @onclick="() => Editar(usuario.Id)">
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            <table class="ci-table">
+
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (!usuarios.Any())
+                    {
+                        <tr>
+                            <td colspan="5">
+                                No existen usuarios registrados.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var usuario in usuarios)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @usuario.Username
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @usuario.Correo
+                                </td>
+
+                                <td>
+                                    @(usuario.Rol?.Nombre
+                                      ?? usuario.RolNombre)
+                                </td>
+
+                                <td>
+                                    <EstadoBadge Estado="@usuario.Estado" />
+                                </td>
+
+                                <td>
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Editar(usuario.Id)">
+                                        Editar
+                                    </button>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+
 
 @code {
-    private readonly List<UsuarioUi> usuarios =
-    [
-        new()
-        {
-            Id = 1,
-            Username = "admin",
-            Estado = "ACTIVO",
-            RolId = 1,
-            RolNombre = "ADMIN"
-        },
 
-        new()
+    private List<UsuarioUi> usuarios = new();
+
+    private bool cargando = true;
+
+    private string error = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.EsAdmin)
         {
-            Id = 2,
-            Username = "john",
-            Estado = "ACTIVO",
-            RolId = 2,
-            RolNombre = "TECNICO"
+            cargando = false;
+            return;
         }
-    ];
+
+        await CargarUsuarios();
+    }
+
+
+    private async Task CargarUsuarios()
+    {
+        try
+        {
+            cargando = true;
+
+            usuarios =
+                await UsuarioService
+                    .ListarAsync();
+        }
+        catch (Exception ex)
+        {
+            error =
+                "No se pudieron cargar los usuarios. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
 
     private void Nuevo()
     {
-        Navigation.NavigateTo("/usuarios/nuevo");
+        Navigation.NavigateTo(
+            "/usuarios/nuevo"
+        );
     }
+
 
     private void Editar(long id)
     {
-        Navigation.NavigateTo($"/usuarios/editar/{id}");
+        Navigation.NavigateTo(
+            $"/usuarios/editar/{id}"
+        );
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
     default Optional<Usuario> findOneWithEagerRelationships(Long id) {
         return this.findOneWithToOneRelationships(id);
     }
@@ -37,4 +38,16 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query("select usuario from Usuario usuario left join fetch usuario.rol where usuario.id =:id")
     Optional<Usuario> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        "select usuario from Usuario usuario left join fetch usuario.rol " +
+        "where lower(usuario.username) = lower(:username)"
+    )
+    Optional<Usuario> findOneByUsernameIgnoreCase(
+        @Param("username") String username
+    );
+
+    boolean existsByUsernameIgnoreCase(String username);
+
+    boolean existsByCorreoIgnoreCase(String correo);
 }
