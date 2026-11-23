@@ -1,81 +1,106 @@
 ﻿@page "/roles"
 
 @using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
 @inject NavigationManager Navigation
+@inject SessionService Session
 
 <div class="ci-page-header">
     <div>
         <h1>Roles</h1>
-        <p>Administra los roles de usuarios.</p>
+        <p>Roles definidos para el control de acceso al sistema.</p>
     </div>
-
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Nuevo">
-        + Nuevo rol
-    </button>
 </div>
 
-<div class="ci-card">
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando...
+    </div>
+}
+else
+{
+    <div class="ci-card">
 
-        <tbody>
-            @foreach (var rol in roles)
-            {
-                <tr>
-                    <td>@rol.Nombre</td>
-                    <td>@rol.Descripcion</td>
+        <div class="ci-table-wrap">
 
-                    <td>
-                        <button class="ci-btn ci-btn-light"
-                                @onclick="() => Editar(rol.Id)">
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            <table class="ci-table">
+
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var rol in roles)
+                    {
+                        <tr>
+                            <td>
+                                <strong>
+                                    @rol.Nombre
+                                </strong>
+                            </td>
+
+                            <td>
+                                @rol.Descripcion
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
 
 @code {
+
+    private bool cargando = true;
+
     private readonly List<RolUi> roles =
     [
         new()
         {
             Id = 1,
             Nombre = "ADMIN",
-            Descripcion = "Administrador"
+            Descripcion = "Administrador general del sistema"
         },
 
         new()
         {
             Id = 2,
             Nombre = "TECNICO",
-            Descripcion = "Personal técnico"
+            Descripcion = "Personal técnico encargado de instrumentos y calibraciones"
         },
 
         new()
         {
             Id = 3,
             Nombre = "CONSULTA",
-            Descripcion = "Solo consulta"
+            Descripcion = "Usuario con acceso únicamente a consultas"
         }
     ];
 
-    private void Nuevo()
+    protected override async Task OnInitializedAsync()
     {
-        Navigation.NavigateTo("/roles/nuevo");
-    }
+        await Session.RestaurarSesionAsync();
 
-    private void Editar(long id)
-    {
-        Navigation.NavigateTo($"/roles/editar/{id}");
+        if (!Session.EsAdmin)
+        {
+            Navigation.NavigateTo(
+                "/dashboard"
+            );
+
+            return;
+        }
+
+        cargando = false;
     }
 }

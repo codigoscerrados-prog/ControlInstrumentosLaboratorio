@@ -1,0 +1,118 @@
+﻿@page "/grupos/ver/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
+@inject NavigationManager Navigation
+@inject GrupoInstrumentalService GrupoService
+@inject SessionService Session
+
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando grupo...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-page-header">
+        <div>
+            <h1>@grupo.Nombre</h1>
+            <p>Detalle del grupo instrumental.</p>
+        </div>
+    </div>
+
+    <div class="ci-card">
+        <dl class="ci-dl">
+
+            <dt>Código</dt>
+            <dd>@grupo.Codigo</dd>
+
+            <dt>Nombre</dt>
+            <dd>@grupo.Nombre</dd>
+
+            <dt>Descripción</dt>
+            <dd>
+                @(string.IsNullOrWhiteSpace(grupo.Descripcion)
+                    ? "-"
+                    : grupo.Descripcion)
+            </dd>
+
+        </dl>
+    </div>
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Volver">
+            Volver
+        </button>
+
+        @if (Session.PuedeEditar)
+        {
+            <button class="ci-btn ci-btn-primary"
+                    @onclick="Editar">
+                Editar
+            </button>
+        }
+
+    </div>
+}
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private GrupoInstrumentalUi grupo = new();
+
+    private bool cargando = true;
+
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Session.RestaurarSesionAsync();
+
+        try
+        {
+            var encontrado =
+                await GrupoService.ObtenerAsync(Id);
+
+            if (encontrado is null)
+            {
+                error = "No se encontró el grupo.";
+                return;
+            }
+
+            grupo = encontrado;
+        }
+        catch (Exception ex)
+        {
+            error =
+                "No se pudo cargar el grupo. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("/grupos");
+    }
+
+    private void Editar()
+    {
+        Navigation.NavigateTo(
+            $"/grupos/editar/{Id}"
+        );
+    }
+}

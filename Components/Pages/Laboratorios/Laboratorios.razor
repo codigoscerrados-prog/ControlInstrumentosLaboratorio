@@ -17,8 +17,8 @@
     @if (Session.PuedeEditar)
     {
         <button class="ci-btn ci-btn-primary"
-                @onclick="Nueva">
-            + Nueva calibración
+                @onclick="Nuevo">
+            + Nuevo laboratorio
         </button>
     }
 </div>
@@ -87,15 +87,24 @@ else
                                     <EstadoBadge Estado="@laboratorio.Estado" />
                                 </td>
 
-                                <td>
+                                <td class="ci-actions">
+
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Ver(laboratorio.Id)">
+                                        Ver
+                                    </button>
+
                                     @if (Session.PuedeEditar)
                                     {
-                                    <button class="ci-btn ci-btn-light"
-                                            @onclick="() => Editar(laboratorio.Id)">
-                                        Editar
-                                    </button>
+                                        <button class="ci-btn ci-btn-light"
+                                                @onclick="() => Editar(laboratorio.Id)">
+                                            Editar
+                                        </button>
                                     }
+
                                 </td>
+
+
 
                             </tr>
                         }
@@ -120,6 +129,12 @@ else
 
     private string error = "";
 
+    private void Ver(long id)
+    {
+        Navigation.NavigateTo(
+            $"/laboratorios/ver/{id}"
+        );
+    }
 
     protected override async Task OnInitializedAsync()
     {

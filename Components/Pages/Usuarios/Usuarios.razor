@@ -16,10 +16,13 @@
         <p>Administra usuarios del sistema.</p>
     </div>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Nuevo">
-        + Nuevo usuario
-    </button>
+    @if (Session.EsAdmin)
+    {
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Nuevo">
+            + Nuevo usuario
+        </button>
+    }
 
 </div>
 
@@ -131,7 +134,10 @@ else
 
         if (!Session.EsAdmin)
         {
-            cargando = false;
+            Navigation.NavigateTo(
+                "/dashboard"
+            );
+
             return;
         }
 

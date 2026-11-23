@@ -77,14 +77,21 @@ else
 
                                 <td>@grupo.Descripcion</td>
 
-                                <td>
+                                <td class="ci-actions">
+
+                                    <button class="ci-btn ci-btn-light"
+                                            @onclick="() => Ver(grupo.Id)">
+                                        Ver
+                                    </button>
+
                                     @if (Session.PuedeEditar)
                                     {
-                                    <button class="ci-btn ci-btn-light"
-                                            @onclick="() => Editar(grupo.Id)">
-                                        Editar
+                                        <button class="ci-btn ci-btn-light"
+                                                @onclick="() => Editar(grupo.Id)">
+                                            Editar
                                         </button>
                                     }
+
                                 </td>
 
                             </tr>
@@ -110,6 +117,12 @@ else
 
     private string error = "";
 
+    private void Ver(long id)
+    {
+        Navigation.NavigateTo(
+            $"/grupos/ver/{id}"
+        );
+    }
 
     protected override async Task OnInitializedAsync()
     {

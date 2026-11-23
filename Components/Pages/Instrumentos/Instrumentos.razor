@@ -162,16 +162,7 @@ else
 
                                     <button class="ci-btn ci-btn-light"
                                             @onclick="() => Ver(instrumento.Id)">
-
                                         Ver
-
-                                    </button>
-
-                                    <button class="ci-btn ci-btn-light"
-                                            @onclick="() => Editar(instrumento.Id)">
-
-                                        Editar
-
                                     </button>
 
                                     @if (Session.PuedeEditar)
@@ -184,14 +175,16 @@ else
                                         @if (instrumento.Estado != "BAJA")
                                         {
                                             <button class="ci-btn ci-btn-danger-soft"
-                                                    @onclick="() => DarDeBaja(instrumento)">
+                                                    @onclick="() => DarDeBaja(instrumento)"
+                                                    disabled="@(procesandoId == instrumento.Id)">
                                                 Dar de baja
                                             </button>
                                         }
                                         else
                                         {
                                             <button class="ci-btn ci-btn-success-soft"
-                                                    @onclick="() => Reactivar(instrumento)">
+                                                    @onclick="() => Reactivar(instrumento)"
+                                                    disabled="@(procesandoId == instrumento.Id)">
                                                 Reactivar
                                             </button>
                                         }

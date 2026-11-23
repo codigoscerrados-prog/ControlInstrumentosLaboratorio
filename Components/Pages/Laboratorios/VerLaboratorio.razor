@@ -1,0 +1,126 @@
+﻿@page "/laboratorios/ver/{Id:long}"
+
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Components.Shared
+@using BlazorApp1.Services
+
+@inject NavigationManager Navigation
+@inject LaboratorioCalibracionService LaboratorioService
+@inject SessionService Session
+
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando laboratorio...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-page-header">
+        <div>
+            <h1>@laboratorio.Nombre</h1>
+            <p>Detalle del laboratorio de calibración.</p>
+        </div>
+
+        <EstadoBadge Estado="@laboratorio.Estado" />
+    </div>
+
+    <div class="ci-card">
+
+        <dl class="ci-dl">
+            <dt>Nombre</dt>
+            <dd>@laboratorio.Nombre</dd>
+
+            <dt>RUC</dt>
+            <dd>@laboratorio.Ruc</dd>
+
+            <dt>Dirección</dt>
+            <dd>@laboratorio.Direccion</dd>
+
+            <dt>Teléfono</dt>
+            <dd>@laboratorio.Telefono</dd>
+
+            <dt>Correo</dt>
+            <dd>@laboratorio.Correo</dd>
+
+            <dt>Estado</dt>
+            <dd>@laboratorio.Estado</dd>
+        </dl>
+
+    </div>
+
+    <div class="ci-footer-actions">
+
+        <button class="ci-btn ci-btn-light"
+                @onclick="Volver">
+            Volver
+        </button>
+
+        @if (Session.PuedeEditar)
+        {
+            <button class="ci-btn ci-btn-primary"
+                    @onclick="Editar">
+                Editar
+            </button>
+        }
+
+    </div>
+}
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private LaboratorioCalibracionUi laboratorio = new();
+
+    private bool cargando = true;
+
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Session.RestaurarSesionAsync();
+
+        try
+        {
+            var encontrado =
+                await LaboratorioService.ObtenerAsync(Id);
+
+            if (encontrado is null)
+            {
+                error = "No se encontró el laboratorio.";
+                return;
+            }
+
+            laboratorio = encontrado;
+        }
+        catch (Exception ex)
+        {
+            error =
+                "No se pudo cargar el laboratorio. " +
+                ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("/laboratorios");
+    }
+
+    private void Editar()
+    {
+        Navigation.NavigateTo(
+            $"/laboratorios/editar/{Id}"
+        );
+    }
+}

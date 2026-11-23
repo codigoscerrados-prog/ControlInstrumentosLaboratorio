@@ -76,13 +76,21 @@ else
                                     @tipo.Descripcion
                                 </td>
 
-                                <td>@if (Session.PuedeEditar)
-{
+                                <td class="ci-actions">
+
                                     <button class="ci-btn ci-btn-light"
-                                            @onclick="() => Editar(tipo.Id)">
-                                        Editar
+                                            @onclick="() => Ver(tipo.Id)">
+                                        Ver
+                                    </button>
+
+                                    @if (Session.PuedeEditar)
+                                    {
+                                        <button class="ci-btn ci-btn-light"
+                                                @onclick="() => Editar(tipo.Id)">
+                                            Editar
                                         </button>
                                     }
+
                                 </td>
 
                             </tr>
@@ -108,6 +116,12 @@ else
 
     private string error = "";
 
+    private void Ver(long id)
+    {
+        Navigation.NavigateTo(
+            $"/tipos-instrumento/ver/{id}"
+        );
+    }
 
     protected override async Task OnInitializedAsync()
     {

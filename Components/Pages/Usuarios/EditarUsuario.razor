@@ -2,6 +2,8 @@
 
 @using BlazorApp1.Components.Models
 @inject NavigationManager Navigation
+@using BlazorApp1.Services
+@inject SessionService Session
 
 <h1>Editar usuario</h1>
 
@@ -73,5 +75,18 @@
     private void Cancelar()
     {
         Navigation.NavigateTo("/usuarios");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.EsAdmin)
+        {
+            Navigation.NavigateTo(
+                "/dashboard"
+            );
+
+            return;
+        }
     }
 }
