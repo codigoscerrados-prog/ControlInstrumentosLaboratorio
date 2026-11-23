@@ -1,5 +1,13 @@
 @page "/dashboard"
 
+@using BlazorApp1.Components.Models
+@using BlazorApp1.Services
+
+@inject ActivoService ActivoService
+@inject CalibracionService CalibracionService
+@inject SessionService Session
+
+
 <div class="ci-page-header">
     <div>
         <h1>Dashboard</h1>
@@ -7,55 +15,268 @@
     </div>
 </div>
 
-<div class="ci-kpi-grid">
-    <div class="ci-kpi-card">
-        <span>Total instrumentos</span>
-        <strong>58</strong>
+
+@if (cargando)
+{
+    <div class="ci-card">
+        Cargando información del dashboard...
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="ci-message-error">
+        @error
+    </div>
+}
+else
+{
+    <div class="ci-kpi-grid">
+
+        <div class="ci-kpi-card">
+            <span>Total instrumentos</span>
+            <strong>@TotalInstrumentos</strong>
+        </div>
+
+        <div class="ci-kpi-card">
+            <span>Operativos</span>
+            <strong>@TotalOperativos</strong>
+        </div>
+
+        <div class="ci-kpi-card">
+            <span>En calibración</span>
+            <strong>@TotalEnCalibracion</strong>
+        </div>
+
+        <div class="ci-kpi-card">
+            <span>De baja</span>
+            <strong>@TotalBaja</strong>
+        </div>
+
     </div>
 
-    <div class="ci-kpi-card">
-        <span>Operativos</span>
-        <strong>48</strong>
+
+    <div class="ci-card">
+
+        <h2>Próximas calibraciones</h2>
+
+        <div class="ci-table-wrap">
+
+            <table class="ci-table">
+
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Instrumento</th>
+                        <th>Laboratorio</th>
+                        <th>Vencimiento</th>
+                        <th>Días restantes</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (!ProximasCalibraciones.Any())
+                    {
+                        <tr>
+                            <td colspan="5">
+                                No existen calibraciones próximas a vencer.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var calibracion in ProximasCalibraciones)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @(calibracion.Activo?.Codigo ?? "-")
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @(calibracion.Activo?.Nombre ?? "-")
+                                </td>
+
+                                <td>
+                                    @ObtenerLaboratorio(calibracion)
+                                </td>
+
+                                <td>
+                                    @Fecha(calibracion.FechaVencimiento)
+                                </td>
+
+                                <td>
+                                    @DiasRestantes(
+                                        calibracion.FechaVencimiento
+                                    )
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
+}
 
-    <div class="ci-kpi-card">
-        <span>En calibración</span>
-        <strong>6</strong>
-    </div>
 
-    <div class="ci-kpi-card">
-        <span>De baja</span>
-        <strong>4</strong>
-    </div>
-</div>
+@code {
 
-<div class="ci-card">
-    <h2>Próximas calibraciones</h2>
+    private List<ActivoUi> instrumentos = new();
 
-    <table class="ci-table">
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Instrumento</th>
-                <th>Laboratorio</th>
-                <th>Vencimiento</th>
-            </tr>
-        </thead>
+    private List<CalibracionUi> calibraciones = new();
 
-        <tbody>
-            <tr>
-                <td>MED-M-26</td>
-                <td>Manómetro digital</td>
-                <td>METROIL</td>
-                <td>15/05/2027</td>
-            </tr>
+    private bool cargando = true;
 
-            <tr>
-                <td>MED-Q-01</td>
-                <td>Medidor de caudal</td>
-                <td>INACAL</td>
-                <td>29/01/2027</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+    private string error = "";
+
+
+    private int TotalInstrumentos =>
+        instrumentos.Count;
+
+
+    private int TotalOperativos =>
+        instrumentos.Count(
+            x => string.Equals(
+                x.Estado,
+                "OPERATIVO",
+                StringComparison.OrdinalIgnoreCase
+            )
+        );
+
+
+    private int TotalEnCalibracion =>
+        instrumentos.Count(
+            x => string.Equals(
+                x.Estado,
+                "EN_CALIBRACION",
+                StringComparison.OrdinalIgnoreCase
+            )
+        );
+
+
+    private int TotalBaja =>
+        instrumentos.Count(
+            x => string.Equals(
+                x.Estado,
+                "BAJA",
+                StringComparison.OrdinalIgnoreCase
+            )
+        );
+
+
+    private IEnumerable<CalibracionUi>
+        ProximasCalibraciones =>
+            calibraciones
+                .Where(
+                    x =>
+                        x.FechaVencimiento.HasValue
+                        &&
+                        x.FechaVencimiento.Value.Date
+                            >= DateTime.Today
+                )
+                .OrderBy(
+                    x => x.FechaVencimiento
+                )
+                .Take(5);
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Session.RestaurarSesionAsync();
+
+        await CargarDashboard();
+    }
+
+
+    private async Task CargarDashboard()
+    {
+        try
+        {
+            cargando = true;
+
+            error = "";
+
+            var instrumentosTask =
+                ActivoService.ListarAsync();
+
+            var calibracionesTask =
+                CalibracionService.ListarAsync();
+
+
+            await Task.WhenAll(
+                instrumentosTask,
+                calibracionesTask
+            );
+
+
+            instrumentos =
+                await instrumentosTask;
+
+            calibraciones =
+                await calibracionesTask;
+        }
+        catch (Exception ex)
+        {
+            error =
+                "No se pudo cargar la información del dashboard. "
+                + ex.Message;
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+
+    private static string ObtenerLaboratorio(
+        CalibracionUi calibracion)
+    {
+        return calibracion.Laboratorio?.Nombre
+            ?? calibracion
+                .LaboratorioCalibracion?.Nombre
+            ?? "-";
+    }
+
+
+    private static string Fecha(
+        DateTime? fecha)
+    {
+        return fecha?.ToString(
+            "dd/MM/yyyy"
+        ) ?? "-";
+    }
+
+
+    private static string DiasRestantes(
+        DateTime? fecha)
+    {
+        if (!fecha.HasValue)
+        {
+            return "-";
+        }
+
+        var dias =
+            (fecha.Value.Date - DateTime.Today)
+                .Days;
+
+        if (dias == 0)
+        {
+            return "Hoy";
+        }
+
+        if (dias == 1)
+        {
+            return "1 día";
+        }
+
+        return $"{dias} días";
+    }
+}
