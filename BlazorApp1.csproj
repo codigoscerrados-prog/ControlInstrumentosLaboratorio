@@ -7,4 +7,12 @@
 		<BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Content Remove="Components\Pages\Calibraciones\VerCalibracion.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Components\Pages\Calibraciones\VerCalibracion.razor" />
+	</ItemGroup>
+
 </Project>
