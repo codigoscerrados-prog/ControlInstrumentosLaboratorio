@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.GrupoInstrumental}.
  */
@@ -49,6 +49,7 @@ public class GrupoInstrumentalResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<GrupoInstrumental> createGrupoInstrumental(@Valid @RequestBody GrupoInstrumental grupoInstrumental)
         throws URISyntaxException {
         LOG.debug("REST request to save GrupoInstrumental : {}", grupoInstrumental);
@@ -72,6 +73,7 @@ public class GrupoInstrumentalResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<GrupoInstrumental> updateGrupoInstrumental(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody GrupoInstrumental grupoInstrumental
@@ -106,6 +108,7 @@ public class GrupoInstrumentalResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<GrupoInstrumental> partialUpdateGrupoInstrumental(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody GrupoInstrumental grupoInstrumental
@@ -149,6 +152,7 @@ public class GrupoInstrumentalResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Grupo Instrumentals in body.
      */
     @GetMapping("")
+
     public List<GrupoInstrumental> getAllGrupoInstrumentals() {
         LOG.debug("REST request to get all GrupoInstrumentals");
         return grupoInstrumentalRepository.findAll();
@@ -161,6 +165,7 @@ public class GrupoInstrumentalResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the grupoInstrumental, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
+   
     public ResponseEntity<GrupoInstrumental> getGrupoInstrumental(@PathVariable("id") Long id) {
         LOG.debug("REST request to get GrupoInstrumental : {}", id);
         Optional<GrupoInstrumental> grupoInstrumental = grupoInstrumentalRepository.findById(id);
@@ -174,6 +179,7 @@ public class GrupoInstrumentalResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Void> deleteGrupoInstrumental(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete GrupoInstrumental : {}", id);
         grupoInstrumentalRepository.deleteById(id);

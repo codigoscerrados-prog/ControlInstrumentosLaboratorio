@@ -5,7 +5,7 @@
 
 @inject NavigationManager Navigation
 @inject CalibracionService CalibracionService
-
+@inject SessionService Session
 
 <div class="ci-page-header">
 
@@ -17,12 +17,13 @@
         </p>
     </div>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Nueva">
-
-        + Nueva calibración
-
-    </button>
+    @if (Session.PuedeEditar)
+    {
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Nueva">
+            + Nueva calibración
+        </button>
+    }
 
 </div>
 
@@ -112,14 +113,15 @@ else
                                 </td>
 
                                 <td class="ci-actions">
-
+                                    @if (Session.PuedeEditar)
+                                    {
                                     <button class="ci-btn ci-btn-light"
                                             @onclick="() => Editar(c.Id)">
 
                                         Editar
 
                                     </button>
-
+                                    }
                                 </td>
 
                             </tr>

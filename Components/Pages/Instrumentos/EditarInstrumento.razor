@@ -88,6 +88,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.PuedeEditar)
+        {
+            Navigation.NavigateTo(
+                $"/instrumentos/ver/{Id}"
+            );
+
+            return;
+        }
+
         await CargarDatos();
     }
 

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.Activo}.
  */
@@ -49,6 +49,7 @@ public class ActivoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Activo> createActivo(@Valid @RequestBody Activo activo) throws URISyntaxException {
         LOG.debug("REST request to save Activo : {}", activo);
         if (activo.getId() != null) {
@@ -71,6 +72,7 @@ public class ActivoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Activo> updateActivo(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody Activo activo
@@ -105,6 +107,7 @@ public class ActivoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Activo> partialUpdateActivo(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Activo activo
@@ -185,6 +188,7 @@ public class ActivoResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Void> deleteActivo(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Activo : {}", id);
         activoRepository.deleteById(id);

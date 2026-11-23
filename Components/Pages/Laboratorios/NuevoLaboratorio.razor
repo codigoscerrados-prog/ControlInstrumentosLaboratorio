@@ -121,6 +121,19 @@
 
     private string error = "";
 
+    protected override async Task OnInitializedAsync()
+    {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.PuedeEditar)
+        {
+            Navigation.NavigateTo(
+                "/laboratorios"
+            );
+
+            return;
+        }
+    }
 
     private async Task Guardar()
     {

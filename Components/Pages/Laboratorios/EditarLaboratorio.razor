@@ -136,6 +136,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.PuedeEditar)
+        {
+            Navigation.NavigateTo(
+                "/laboratorios"
+            );
+
+            return;
+        }
+
         await CargarLaboratorio();
     }
 

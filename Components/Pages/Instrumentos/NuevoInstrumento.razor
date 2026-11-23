@@ -102,6 +102,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.PuedeEditar)
+        {
+            Navigation.NavigateTo(
+                "/instrumentos"
+            );
+
+            return;
+        }
+
         await CargarCatalogos();
     }
 

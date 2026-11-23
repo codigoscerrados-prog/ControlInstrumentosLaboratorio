@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.TipoInstrumento}.
  */
@@ -49,6 +49,7 @@ public class TipoInstrumentoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<TipoInstrumento> createTipoInstrumento(@Valid @RequestBody TipoInstrumento tipoInstrumento)
         throws URISyntaxException {
         LOG.debug("REST request to save TipoInstrumento : {}", tipoInstrumento);
@@ -72,6 +73,7 @@ public class TipoInstrumentoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<TipoInstrumento> updateTipoInstrumento(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody TipoInstrumento tipoInstrumento
@@ -106,6 +108,7 @@ public class TipoInstrumentoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<TipoInstrumento> partialUpdateTipoInstrumento(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody TipoInstrumento tipoInstrumento
@@ -148,6 +151,7 @@ public class TipoInstrumentoResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Tipo Instrumentos in body.
      */
     @GetMapping("")
+   
     public List<TipoInstrumento> getAllTipoInstrumentos() {
         LOG.debug("REST request to get all TipoInstrumentos");
         return tipoInstrumentoRepository.findAll();
@@ -160,6 +164,7 @@ public class TipoInstrumentoResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tipoInstrumento, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
+    
     public ResponseEntity<TipoInstrumento> getTipoInstrumento(@PathVariable("id") Long id) {
         LOG.debug("REST request to get TipoInstrumento : {}", id);
         Optional<TipoInstrumento> tipoInstrumento = tipoInstrumentoRepository.findById(id);
@@ -173,6 +178,7 @@ public class TipoInstrumentoResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Void> deleteTipoInstrumento(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete TipoInstrumento : {}", id);
         tipoInstrumentoRepository.deleteById(id);

@@ -5,18 +5,20 @@
 
 @inject NavigationManager Navigation
 @inject GrupoInstrumentalService GrupoService
-
+@inject SessionService Session
 
 <div class="ci-page-header">
     <div>
         <h1>Grupos instrumentales</h1>
         <p>Bancos, patrones y respaldo.</p>
     </div>
-
+    @if (Session.PuedeEditar)
+{
     <button class="ci-btn ci-btn-primary"
             @onclick="Nuevo">
         + Nuevo grupo
-    </button>
+        </button>
+    }
 </div>
 
 
@@ -76,10 +78,13 @@ else
                                 <td>@grupo.Descripcion</td>
 
                                 <td>
+                                    @if (Session.PuedeEditar)
+                                    {
                                     <button class="ci-btn ci-btn-light"
                                             @onclick="() => Editar(grupo.Id)">
                                         Editar
-                                    </button>
+                                        </button>
+                                    }
                                 </td>
 
                             </tr>

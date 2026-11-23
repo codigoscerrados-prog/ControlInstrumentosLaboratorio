@@ -116,9 +116,28 @@ else
 
     private string error = "";
 
-
     protected override async Task OnInitializedAsync()
     {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.PuedeEditar)
+        {
+            if (ActivoId.HasValue)
+            {
+                Navigation.NavigateTo(
+                    $"/instrumentos/ver/{ActivoId.Value}"
+                );
+            }
+            else
+            {
+                Navigation.NavigateTo(
+                    "/calibraciones"
+                );
+            }
+
+            return;
+        }
+
         await CargarCatalogos();
     }
 

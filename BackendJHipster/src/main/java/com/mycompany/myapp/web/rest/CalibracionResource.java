@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.Calibracion}.
  */
@@ -49,6 +49,7 @@ public class CalibracionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Calibracion> createCalibracion(@Valid @RequestBody Calibracion calibracion) throws URISyntaxException {
         LOG.debug("REST request to save Calibracion : {}", calibracion);
         if (calibracion.getId() != null) {
@@ -71,6 +72,7 @@ public class CalibracionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Calibracion> updateCalibracion(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody Calibracion calibracion
@@ -105,6 +107,7 @@ public class CalibracionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Calibracion> partialUpdateCalibracion(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Calibracion calibracion
@@ -153,6 +156,7 @@ public class CalibracionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Calibracions in body.
      */
     @GetMapping("")
+   
     public List<Calibracion> getAllCalibracions(
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
@@ -184,6 +188,7 @@ public class CalibracionResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Void> deleteCalibracion(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Calibracion : {}", id);
         calibracionRepository.deleteById(id);

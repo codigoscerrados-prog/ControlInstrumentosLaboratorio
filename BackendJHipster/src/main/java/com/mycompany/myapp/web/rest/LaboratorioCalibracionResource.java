@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.LaboratorioCalibracion}.
  */
@@ -49,6 +49,7 @@ public class LaboratorioCalibracionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<LaboratorioCalibracion> createLaboratorioCalibracion(
         @Valid @RequestBody LaboratorioCalibracion laboratorioCalibracion
     ) throws URISyntaxException {
@@ -73,6 +74,7 @@ public class LaboratorioCalibracionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<LaboratorioCalibracion> updateLaboratorioCalibracion(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody LaboratorioCalibracion laboratorioCalibracion
@@ -107,6 +109,7 @@ public class LaboratorioCalibracionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<LaboratorioCalibracion> partialUpdateLaboratorioCalibracion(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody LaboratorioCalibracion laboratorioCalibracion
@@ -153,6 +156,7 @@ public class LaboratorioCalibracionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Laboratorio Calibracions in body.
      */
     @GetMapping("")
+ 
     public List<LaboratorioCalibracion> getAllLaboratorioCalibracions() {
         LOG.debug("REST request to get all LaboratorioCalibracions");
         return laboratorioCalibracionRepository.findAll();
@@ -165,6 +169,7 @@ public class LaboratorioCalibracionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the laboratorioCalibracion, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
+   
     public ResponseEntity<LaboratorioCalibracion> getLaboratorioCalibracion(@PathVariable("id") Long id) {
         LOG.debug("REST request to get LaboratorioCalibracion : {}", id);
         Optional<LaboratorioCalibracion> laboratorioCalibracion = laboratorioCalibracionRepository.findById(id);
@@ -178,6 +183,7 @@ public class LaboratorioCalibracionResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@usuarioPermisoService.puedeEditar()")
     public ResponseEntity<Void> deleteLaboratorioCalibracion(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete LaboratorioCalibracion : {}", id);
         laboratorioCalibracionRepository.deleteById(id);

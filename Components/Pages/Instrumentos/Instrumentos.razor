@@ -4,6 +4,7 @@
 @using BlazorApp1.Components.Shared
 @using BlazorApp1.Services
 
+@inject SessionService Session
 @inject NavigationManager Navigation
 @inject ActivoService ActivoService
 
@@ -18,12 +19,13 @@
         </p>
     </div>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Nuevo">
-
-        + Nuevo instrumento
-
-    </button>
+    @if (Session.PuedeEditar)
+    {
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Nuevo">
+            + Nuevo instrumento
+        </button>
+    }
 
 </div>
 
@@ -172,25 +174,27 @@ else
 
                                     </button>
 
-                                    @if (instrumento.Estado != "BAJA")
+                                    @if (Session.PuedeEditar)
                                     {
-                                        <button class="ci-btn ci-btn-danger-soft"
-                                                @onclick="() => DarDeBaja(instrumento)"
-                                                disabled="@(procesandoId == instrumento.Id)">
-
-                                            Dar de baja
-
+                                        <button class="ci-btn ci-btn-light"
+                                                @onclick="() => Editar(instrumento.Id)">
+                                            Editar
                                         </button>
-                                    }
-                                    else
-                                    {
-                                        <button class="ci-btn ci-btn-success-soft"
-                                                @onclick="() => Reactivar(instrumento)"
-                                                disabled="@(procesandoId == instrumento.Id)">
 
-                                            Reactivar
-
-                                        </button>
+                                        @if (instrumento.Estado != "BAJA")
+                                        {
+                                            <button class="ci-btn ci-btn-danger-soft"
+                                                    @onclick="() => DarDeBaja(instrumento)">
+                                                Dar de baja
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="ci-btn ci-btn-success-soft"
+                                                    @onclick="() => Reactivar(instrumento)">
+                                                Reactivar
+                                            </button>
+                                        }
                                     }
 
                                 </td>

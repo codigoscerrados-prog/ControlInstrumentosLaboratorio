@@ -6,7 +6,7 @@
 
 @inject NavigationManager Navigation
 @inject LaboratorioCalibracionService LaboratorioService
-
+@inject SessionService Session
 
 <div class="ci-page-header">
     <div>
@@ -14,10 +14,13 @@
         <p>Administra los laboratorios externos.</p>
     </div>
 
-    <button class="ci-btn ci-btn-primary"
-            @onclick="Nuevo">
-        + Nuevo laboratorio
-    </button>
+    @if (Session.PuedeEditar)
+    {
+        <button class="ci-btn ci-btn-primary"
+                @onclick="Nueva">
+            + Nueva calibración
+        </button>
+    }
 </div>
 
 
@@ -85,10 +88,13 @@ else
                                 </td>
 
                                 <td>
+                                    @if (Session.PuedeEditar)
+                                    {
                                     <button class="ci-btn ci-btn-light"
                                             @onclick="() => Editar(laboratorio.Id)">
                                         Editar
                                     </button>
+                                    }
                                 </td>
 
                             </tr>

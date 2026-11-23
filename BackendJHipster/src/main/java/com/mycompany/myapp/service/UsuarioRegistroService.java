@@ -66,16 +66,15 @@ public class UsuarioRegistroService {
 
         // Solo existen estos tres roles funcionales.
         if (
-            !nombreRol.equals("ADMIN") &&
-            !nombreRol.equals("TECNICO") &&
-            !nombreRol.equals("CONSULTA")
-        ) {
-            throw new BadRequestAlertException(
-                "Rol no permitido",
-                ENTITY_NAME,
-                "rolinvalido"
-            );
-        }
+    !nombreRol.equals("TECNICO") &&
+    !nombreRol.equals("CONSULTA")
+) {
+    throw new BadRequestAlertException(
+        "Solo se pueden registrar usuarios TECNICO o CONSULTA",
+        ENTITY_NAME,
+        "rolinvalido"
+    );
+}
 
 
         // No permitir username duplicado.
@@ -157,24 +156,7 @@ public class UsuarioRegistroService {
         );
 
 
-        /*
-         * Si el rol funcional es ADMIN,
-         * también recibe ROLE_ADMIN
-         * dentro de Spring Security.
-         */
-        if (nombreRol.equals("ADMIN")) {
-
-            Authority authorityAdmin =
-                authorityRepository
-                    .findById(
-                        AuthoritiesConstants.ADMIN
-                    )
-                    .orElseThrow();
-
-            authorities.add(
-                authorityAdmin
-            );
-        }
+       
 
 
         user.setAuthorities(

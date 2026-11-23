@@ -62,18 +62,7 @@ public class UsuarioResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new usuario, or with status {@code 400 (Bad Request)} if the usuario already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Usuario> createUsuario(@Valid @RequestBody Usuario usuario) throws URISyntaxException {
-        LOG.debug("REST request to save Usuario : {}", usuario);
-        if (usuario.getId() != null) {
-            throw new BadRequestAlertException("A new usuario cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        usuario = usuarioRepository.save(usuario);
-        return ResponseEntity.created(new URI("/api/usuarios/" + usuario.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, usuario.getId().toString()))
-            .body(usuario);
-    }
+   
 
     /**
      * {@code PUT  /usuarios/:id} : Updates an existing usuario.

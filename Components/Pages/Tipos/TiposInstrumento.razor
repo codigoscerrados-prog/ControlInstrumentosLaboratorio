@@ -5,18 +5,20 @@
 
 @inject NavigationManager Navigation
 @inject TipoInstrumentoService TipoService
-
+@inject SessionService Session
 
 <div class="ci-page-header">
     <div>
         <h1>Tipos de instrumento</h1>
         <p>Catálogo de tipos.</p>
     </div>
-
+    @if (Session.PuedeEditar)
+{
     <button class="ci-btn ci-btn-primary"
             @onclick="Nuevo">
         + Nuevo tipo
-    </button>
+        </button>
+    }
 </div>
 
 
@@ -74,11 +76,13 @@ else
                                     @tipo.Descripcion
                                 </td>
 
-                                <td>
+                                <td>@if (Session.PuedeEditar)
+{
                                     <button class="ci-btn ci-btn-light"
                                             @onclick="() => Editar(tipo.Id)">
                                         Editar
-                                    </button>
+                                        </button>
+                                    }
                                 </td>
 
                             </tr>

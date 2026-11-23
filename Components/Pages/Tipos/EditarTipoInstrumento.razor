@@ -99,6 +99,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await Session.RestaurarSesionAsync();
+
+        if (!Session.PuedeEditar)
+        {
+            Navigation.NavigateTo(
+                "/tipos-instrumento"
+            );
+
+            return;
+        }
+
         await CargarTipo();
     }
 
